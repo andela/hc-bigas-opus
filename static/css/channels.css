@@ -175,9 +175,13 @@ table.channels-table > tbody > tr > th {
 }
 
 .add-integration li.link-to-github {
-    padding: 16px 8px;
+    padding: 16px 0;
 }
 
 .link-to-github p {
     margin-bottom: 0;
+}
+
+.page-channels .icon-delete {
+    font-size: 16px;
 }
