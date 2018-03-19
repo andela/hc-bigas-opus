@@ -7,3 +7,6 @@ static-collected
 
 .DS_Store
 static/.DS_Store
+
+#virtual environments
+hc-venv/
