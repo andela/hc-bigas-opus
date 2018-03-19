@@ -20,4 +20,4 @@ after_success: coveralls
 cache: pip
 
 notifications:
-  slack: andela:5SdAGfDRSz6aJD7RsBKau9yW
+    slack: andela:fweWnW2tY3E8zXLnNyMkOZ7g
