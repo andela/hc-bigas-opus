@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/6a8c0347ec532662bae3/maintainability)](https://codeclimate.com/github/andela/hc-bigas-opus/maintainability) [![Build Status](https://travis-ci.org/andela/hc-bigas-opus.svg?branch=master)](https://travis-ci.org/andela/hc-bigas-opus)
+
 # healthchecks
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
