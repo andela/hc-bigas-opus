@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/6a8c0347ec532662bae3/maintainability)](https://codeclimate.com/github/andela/hc-bigas-opus/maintainability) [![Build Status](https://travis-ci.org/andela/hc-bigas-opus.svg?branch=develop)](https://travis-ci.org/andela/hc-bigas-opus) [![Coverage Status](https://coveralls.io/repos/github/andela/hc-bigas-opus/badge.svg?branch=develop)](https://coveralls.io/github/andela/hc-bigas-opus?branch=develop)
+
 # healthchecks
 
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
