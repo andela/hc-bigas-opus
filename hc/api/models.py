@@ -34,7 +34,6 @@ PO_PRIORITIES = {
     2: "emergency"
 }
 
-
 class Check(models.Model):
 
     class Meta:
