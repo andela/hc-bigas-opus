@@ -18,9 +18,9 @@ It is live here: [http://healthchecks.io/](http://healthchecks.io/)
 
 The building blocks are:
 
-* Python 2 or Python 3
+* Python 3
 * Django 1.9
-* PostgreSQL or MySQL
+* PostgreSQL
 
 ## Setting Up for Development
 
@@ -40,7 +40,7 @@ in development environment.
 
 * check out project code:
 
-        $ git clone https://github.com/healthchecks/healthchecks.git
+        $ git clone https://github.com/andela/hc-bigas-opus.git
 
 * install requirements (Django, ...) into virtualenv:
 
