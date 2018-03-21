@@ -10,10 +10,16 @@ class CheckTokenTestCase(BaseTestCase):
         self.profile.save()
 
     def test_it_shows_form(self):
+        """
+        Test Forms
+        """
         r = self.client.get("/accounts/check_token/alice/secret-token/")
         self.assertContains(r, "You are about to log in")
 
     def test_it_redirects(self):
+        """
+        Test Redirects
+        """
         r = self.client.post("/accounts/check_token/alice/secret-token/")
         self.assertRedirects(r, "/checks/")
 
