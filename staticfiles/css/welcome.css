@@ -1,0 +1,89 @@
+.page-welcome .navbar {
+    margin-bottom: 0;
+}
+
+.index-bleed {
+    background: #FFF;
+    padding-bottom: 2em;
+}
+
+.get-started-bleed {
+    background: #e5ece5;
+    padding-bottom: 3em;
+}
+
+.footer-jumbo-bleed {
+    background: #eee;
+}
+
+
+#pitch {
+    text-align: center;
+    padding: 100px 0;
+    margin: 0;
+}
+
+#pitch-subtitle {
+    margin-top: 0;
+    text-align: center;
+}
+
+#pitch-url {
+    text-align: center;
+    font-family: monospace;
+    margin: 10px auto;
+}
+
+#pitch-url-input {
+    text-align: center;
+    background: #FFF;
+    border: 0;
+    box-shadow: none;
+    cursor: text;
+}
+
+#pitch-text {
+    margin: 0 auto 72px auto;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+.page-welcome .highlight pre {
+    background: #FFF;
+    border-top: 0;
+    border-radius: 0;
+    border-color: #dddddd;
+}
+
+#email .instructions {
+    background: #FFF;
+    border: 1px solid #dddddd;
+    border-top: 0;
+    padding: 10px;
+}
+
+#email .email-address {
+    font-size: 18px;
+    padding-top: 10px;
+}
+
+
+#get-started {
+    margin-top: 4em;
+}
+
+.tour-title {
+    margin: 50px 0;
+}
+
+
+.tour-section {
+    margin-bottom: 50px;
+}
+
+.welcome-integrations img {
+    width: 22px;
+    height: 22px;
+}
