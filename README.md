@@ -2,6 +2,8 @@
 
 # healthchecks
 
+## [https://hc-bigas-opus-django-app.herokuapp.com](https://hc-bigas-opus-django-app.herokuapp.com)
+
 ![Screenshot of Welcome page](/stuff/screenshots/welcome.png?raw=true "Welcome Page")
 
 ![Screenshot of My Checks page](/stuff/screenshots/my_checks.png?raw=true "My Checks Page")
@@ -12,13 +14,13 @@
 
 healthchecks is a watchdog for your cron jobs. It's a web server that listens for pings from your cron jobs, plus a web interface.
 
-It is live here: [http://healthchecks.io/](http://healthchecks.io/)
+It is live here: [https://hc-bigas-opus-django-app.herokuapp.com](https://hc-bigas-opus-django-app.herokuapp.com)
 
 The building blocks are:
 
-* Python 2 or Python 3
+* Python 3
 * Django 1.9
-* PostgreSQL or MySQL
+* PostgreSQL
 
 ## Setting Up for Development
 
@@ -38,7 +40,7 @@ in development environment.
 
 * check out project code:
 
-        $ git clone https://github.com/healthchecks/healthchecks.git
+        $ git clone https://github.com/andela/hc-bigas-opus.git
 
 * install requirements (Django, ...) into virtualenv:
 
