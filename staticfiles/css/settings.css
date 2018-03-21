@@ -1,0 +1,20 @@
+.settings-title {
+    padding-bottom: 24px;
+}
+
+.settings-block {
+    padding: 24px;
+}
+
+.settings-block h2 {
+    margin: 0;
+    padding-bottom: 24px;
+}
+
+#badges-description {
+    margin-bottom: 24px;
+}
+
+.page-profile .icon-ok {
+    color: #5cb85c;
+}
