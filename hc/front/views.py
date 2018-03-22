@@ -310,6 +310,8 @@ def do_add_channel(request, data):
 
 @login_required
 def add_channel(request):
+    if request.method == "GET":
+        return redirect("hc-channels")
     assert request.method == "POST"
     return do_add_channel(request, request.POST)
 
