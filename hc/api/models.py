@@ -34,8 +34,8 @@ PO_PRIORITIES = {
     2: "emergency"
 }
 
-class Check(models.Model):
 
+class Check(models.Model):
     class Meta:
         # sendalerts command will query using these
         index_together = ["status", "user", "alert_after"]
