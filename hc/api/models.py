@@ -98,6 +98,7 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+        # returns true if the grace period has not yet expired.
 
     def assign_all_channels(self):
         if self.user:
