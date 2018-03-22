@@ -35,6 +35,7 @@ class ChecksAdmin(admin.ModelAdmin):
     actions = ["send_alert"]
 
     def email(self, obj):
+        # Pass an object and extract the email from the object else return none
         return obj.user.email if obj.user else None
 
     def name_tags(self, obj):
