@@ -101,6 +101,19 @@ class CreateCheckTestCase(BaseTestCase):
 
     ### Test for the assignment of channels
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
-    # def test_it_rejects_timeout_length(self):
-    #     self.post({"timeout": "36000"},
-    #               expected_error="timeout is too small")
+
+    def test_it_rejects_timeout_length(self):
+        """Testing if the length is too large"""
+        r = self.post({
+            "timeout": 10000000
+        })
+
+        self.assertEqual(r.status_code, 400)
+    
+    def test_it_rejects_timeout(self):
+        """testing if length of check is too small"""
+        r = self.post({
+            "timeout": 0
+        })
+
+        self.assertEqual(r.status_code, 400)
