@@ -33,7 +33,7 @@ class PauseTestCase(BaseTestCase):
 
         url = "/api/v1/checks/%s/pause" % check.code
         r = self.client.post(url, "", content_type="application/json",
-                             HTTP_X_API_KEY="abc")
+                            HTTP_X_API_KEY="abc")
         self.assertEqual(r.status_code, 400)
 
         r = self.client.get(
