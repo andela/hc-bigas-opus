@@ -15,3 +15,9 @@ class TeamAccessMiddlewareTestCase(TestCase):
         self.assertEqual(r.status_code, 200)
 
         ### Assert the new Profile objects count
+    def test_profile_count(self):
+        user = User(username="ned", email="ned@example.org")
+        user.save()
+        self.profile = Profile(user=user,  api_key="abc")
+        self.profile.save()
+        assert Profile.objects.count() == 1
