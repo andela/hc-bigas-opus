@@ -12,20 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 import os
 import warnings
-
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-
-# Static files (CSS, JavaScript, Images)
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_URL = '/static/'
-
-# Extra places for collectstatic to find static files.
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-)
+import django_heroku
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 
 HOST = "localhost"
 SECRET_KEY = "---"
@@ -94,10 +85,7 @@ TEST_RUNNER = 'hc.api.tests.CustomRunner'
 # Default database engine is SQLite. So one can just check out code,
 # install requirements.txt and do manage.py runserver and it works
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME':   './hc.sqlite',
-    }
+    'default': dj_database_url.config()
 }
 
 # You can switch database engine to postgres or mysql using environment
@@ -138,6 +126,7 @@ PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-collected')
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -165,3 +154,5 @@ if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:
     warnings.warn("local_settings.py not found, using defaults")
+    
+django_heroku.settings(locals())

@@ -1,20 +1,17 @@
 language: python
 python:
   - "3.6"
-  - "2.7"
-  - "3.4"
 install:
   - pip install -r requirements.txt
   - pip install braintree coveralls mock mysqlclient
 services:
   - postgresql
 env:
-  - DB=sqlite
-  - DB=mysql
   - DB=postgres
 before_script:
   - psql -c 'CREATE DATABASE hc;' -U postgres
 script:
+  - python manage.py collectstatic --noinput
   - coverage run --omit=*/tests/* --source=hc manage.py test
 after_success: coveralls
 cache: pip
