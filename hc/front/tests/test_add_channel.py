@@ -36,6 +36,13 @@ class AddChannelTestCase(BaseTestCase):
             url = "/integrations/add_%s/" % frag
             r = self.client.get(url)
             self.assertContains(r, "Integration Settings", status_code=200)
+            
+    def test_bad_kinds_dont_work(self):
+        """Test that bad kinds don't work"""
+        url = "/integrations/add/"
+        form = {"kind": "bad_kind", "value": "alice@example.org"}
+        self.client.login(username="alice@example.org", password="password")
+        response = self.client.post(url, form)
+        self.assertEquals(response.status_code, 400)
 
     ### Test that the team access works
-    ### Test that bad kinds don't work
