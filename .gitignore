@@ -13,3 +13,4 @@ static/.DS_Store
 hc-venv/
 
 staticfiles/
+venv/
