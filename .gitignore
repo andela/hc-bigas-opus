@@ -11,6 +11,5 @@ static/.DS_Store
 
 #virtual environments
 hc-venv/
-
 staticfiles/
 venv/
