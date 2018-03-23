@@ -141,14 +141,14 @@ SLACK_CLIENT_ID = None
 SLACK_CLIENT_SECRET = None
 
 # Pushover integration -- override these in local_settings
-PUSHOVER_API_TOKEN = None
-PUSHOVER_SUBSCRIPTION_URL = None
+PUSHOVER_API_TOKEN = "token"
+PUSHOVER_SUBSCRIPTION_URL = "url"
 PUSHOVER_EMERGENCY_RETRY_DELAY = 300
 PUSHOVER_EMERGENCY_EXPIRATION = 86400
 
 # Pushbullet integration -- override these in local_settings
-PUSHBULLET_CLIENT_ID = None
-PUSHBULLET_CLIENT_SECRET = None
+PUSHBULLET_CLIENT_ID = "t1"
+PUSHBULLET_CLIENT_SECRET = "s1"
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
