@@ -1,4 +1,4 @@
-from mock import patch
+from unittest.mock import patch
 
 from hc.accounts.models import Profile
 from hc.payments.models import Subscription

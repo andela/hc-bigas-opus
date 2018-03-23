@@ -19,6 +19,28 @@ class CreateCheckTestCase(BaseTestCase):
             ### Assert that the expected error is the response error
 
         return r
+    
+    def wrong_post(self, data, expected_error=None):
+        x = self.client.post("/api/v1", json.dumps(data),
+                             content_type="application/json")
+
+        if expected_error:
+            self.assertEqual(x.status_code, 404)
+            ### Assert that the expected error is the response error
+
+        return x
+        
+    def test_it_fails_wrong_url(self):
+        x = self.wrong_post({
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60
+        })
+        
+
+        self.assertEqual(x.status_code, 404)
 
     def test_it_works(self):
         r = self.post({
@@ -79,3 +101,40 @@ class CreateCheckTestCase(BaseTestCase):
 
     ### Test for the assignment of channels
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
+
+    def test_it_rejects_timeout_length(self):
+        """Testing if the length is too large"""
+        r = self.post({
+            "api_key": "abc", "timeout": 10000000
+        })
+        response_payload = r.json()
+
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(response_payload["error"], "timeout is too large")
+    
+    def test_it_rejects_timeout(self):
+        """testing if length of check is too small"""
+        r = self.post({
+            "api_key": "abc","timeout": 0
+        })
+        response_payload = r.json()
+
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(response_payload["error"], "timeout is too small")
+
+     ### Test for the assignment of channels
+    def test_it_assigns_channels(self):
+        channel = Channel(user=self.alice)
+        channel.save()
+
+        response = self.post({
+            "api_key": "abc",
+            "name": "Foo",
+            "tags": "bar,baz",
+            "timeout": 3600,
+            "grace": 60
+        })
+        check = Check.objects.get(user=self.alice, name="Foo")
+        check.assign_all_channels()
+
+        self.assertEqual(check.channel_set.count(), 1)
