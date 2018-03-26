@@ -435,6 +435,11 @@ def add_hipchat(request):
     ctx = {"page": "channels"}
     return render(request, "integrations/add_hipchat.html", ctx)
 
+@login_required
+def add_sms(request):
+    ctx = {"page": "channels"}
+    return render(request, "integrations/add_sms.html", ctx)
+
 
 @login_required
 def add_pushbullet(request):
