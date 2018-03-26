@@ -105,7 +105,7 @@ class CreateCheckTestCase(BaseTestCase):
     def test_it_rejects_timeout_length(self):
         """Testing if the length is too large"""
         r = self.post({
-            "api_key": "abc", "timeout": 10000000
+            "api_key": "abc", "timeout": 200000000
         })
         response_payload = r.json()
 
