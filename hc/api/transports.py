@@ -2,7 +2,9 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import timezone
 import json
+import os
 import requests
+from twilio.rest import Client
 from six.moves.urllib.parse import quote
 
 from hc.lib import emails
@@ -216,3 +218,15 @@ class VictorOps(HttpTransport):
         }
 
         return self.post(self.channel.value, payload)
+
+class SMS(HttpTransport):
+    def notify(self, check):
+        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        client = Client(account_sid, auth_token)
+        message = client.messages.create(
+            to=self.channel.value,
+            from_=os.getenv('TWILIO_NUMBER'),
+            body="Healthcheck update\nName: {}\nLast ping: {}\nstatus:{}".format(
+                check.name, check.last_ping.strftime('%x, %X'), check.status)
+        )
