@@ -54,6 +54,13 @@ def _associate_demo_check(request, user):
 
 def login(request):
     bad_credentials = False
+    
+    # check if user is authenticated
+    #if authenticated redirect to /checks/
+
+    if request.user.is_authenticated:
+        return redirect('hc-checks')
+
     if request.method == 'POST':
         form = EmailPasswordForm(request.POST)
         if form.is_valid():
