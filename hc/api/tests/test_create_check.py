@@ -101,7 +101,15 @@ class CreateCheckTestCase(BaseTestCase):
 
     ### Test for the assignment of channels
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
+    def test_it_rejects_small_timeout_length(self):
+        """Testing if the length is  small than 60 seconds."""
+        r = self.post({
+            "api_key":"abc", "timeout":59
+        })
+        response_payload = r.json()
 
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(response_payload["error"], "timeout is too small")
     def test_it_rejects_timeout_length(self):
         """Testing if the length is too large"""
         r = self.post({
@@ -122,6 +130,14 @@ class CreateCheckTestCase(BaseTestCase):
         self.assertEqual(r.status_code, 400)
         self.assertEqual(response_payload["error"], "timeout is too small")
 
+    def test_it_accept_timeout_length(self):
+        """Testing if it accepts minimum 1 minute as minimum value."""
+        r = self.post({
+            "api_key":"abc", "timeout":3600
+        })
+        response_payload = r.json()
+
+        self.assertEqual(r.status_code, 201)
      ### Test for the assignment of channels
     def test_it_assigns_channels(self):
         channel = Channel(user=self.alice)
