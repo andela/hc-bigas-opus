@@ -18,16 +18,24 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
         ### Assert that the token is set
-
+        assert isinstance(token, str)
         ### Assert that the email was sent and check email content
 
     def test_it_sends_report(self):
+        '''This Tests ensure the user can set the durtions they want to recieve the reports''' 
+        durations = {
+            "daily": 1,
+            "weekly": 7,
+            "monthly": 30
+        }
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
-        self.alice.profile.send_report()
-
+        for days in durations.values():
+            self.alice.profile.send_report(days)
         ###Assert that the email was sent and check email content
+        self.assertEqual(len(mail.outbox), 3)
+        self.assertEqual(mail.outbox[0].subject, "Monthly Report")
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
