@@ -166,31 +166,24 @@ def profile(request):
         elif "update_reports_allowed" in request.POST:
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
-                print(form.cleaned_data)
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
                 numofdays = 0
-                # print(profile.next_report_date)
-                print(profile.reports_allowed)
+                if form.cleaned_data["reports_frequency"] == "now":
+                    numofdays=0
+                    profile.reports_frequency = "now"
                 if form.cleaned_data["reports_frequency"]  == "daily":
-                    print("daily------------->")
                     numofdays = 1
                     profile.reports_frequency = "daily"
                 if form.cleaned_data["reports_frequency"]  == "weekly":
-                    print("weekly------------->")
                     numofdays = 7
                     profile.reports_frequency = "weekly"
                 if form.cleaned_data["reports_frequency"]  == "monthly":
-                    print("monthly------------->")
                     numofdays = 30
                     profile.reports_frequency = "monthly"
-                print(profile)
-                print("saving----->")
                 now = timezone.now()
-                print(now )
-                print (now + timedelta(days = numofdays))
                 profile.next_report_date = now + timedelta(days = numofdays)
+                profile.send_report()
                 profile.save()
-                print("saved---------->")
                 print(profile.next_report_date)
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
@@ -321,4 +314,17 @@ def switch_team(request, target_username):
 
 
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    now = timezone.now()
+# time_passed = now - profile.next_report_date
+    month_before = now - timedelta(days=30)
+
+    report_due = Q(next_report_date__lt=now)
+    report_not_scheduled = Q(next_report_date__isnull=True)
+
+    q = Profile.objects.filter(report_due | report_not_scheduled)
+    q = q.filter(reports_allowed=True)
+    q = q.filter(user__date_joined__lt=month_before)
+    ctx = {
+        'q':q,
+    }
+    return render(request, 'accounts/dashboard.html', ctx)

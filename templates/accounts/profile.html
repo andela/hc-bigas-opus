@@ -34,9 +34,8 @@
                     <label for="reports_frequency">Reports frequency:
                     </label>
                     <select id="reports_frequency" name="reports_frequency" >
-
-                        <option value="daily" {% if profile.reports_frequency == 'daily' %} selected {% endif %}>
-                            daily</option>
+                        <option value="now" {% if profile.reports_frequency == 'now' %} selected {% endif %}> Now </option>
+                        <option value="daily" {% if profile.reports_frequency == 'daily' %} selected {% endif %}> daily</option>
                         <option value="weekly" {% if profile.reports_frequency == 'weekly' %} selected {% endif %}>weekly</option>
                         <option value="monthly" {% if profile.reports_frequency == 'monthly' %} selected {% endif %}>monthly</option>
                     </select>
