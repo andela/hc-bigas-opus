@@ -59,6 +59,7 @@ class UpdateTimeoutTestCase(BaseTestCase):
         assert r.status_code == 403
         
     def test_update_timeout_and_grace_works(self):
+        """Test if grace and timeout updates."""
         url = "/checks/%s/timeout/" % self.check.code
         payload = {"timeout": 3600, "grace": 60}
 
