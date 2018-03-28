@@ -19,9 +19,11 @@ STATUSES = (
     ("new", "New"),
     ("paused", "Paused"),
     ("often", "Often")
+    ("nag","Nag")
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
+DEFAULT_NAG=td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
@@ -48,9 +50,11 @@ class Check(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     timeout = models.DurationField(default=DEFAULT_TIMEOUT)
     grace = models.DurationField(default=DEFAULT_GRACE)
+    nag = models.DurationField(default=DEFAULT_NAG)
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
+    nag_after = models.DateTimeField(null=True,blank=True,editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
     often = models.BooleanField(default=False)
 
@@ -71,6 +75,7 @@ class Check(models.Model):
 
     def send_alert(self):
         if self.status not in ("up", "down", "often"):
+        if self.status not in ("up", "down","nag"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -92,7 +97,10 @@ class Check(models.Model):
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
-
+        elif self.last_ping + self.timeout + self.self + self.nag < now:
+            return "down"
+        elif self.last_ping + self.timeout + self.self + self.nag > now:
+            return "nag"
         return "down"
 
     def in_grace_period(self):
