@@ -22,6 +22,7 @@
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body settings-block">
+                <a href="{% url 'hc-dashboard' %}" class="btn btn-default pull-right" >Dash Board</a>.
                 <form method="post">
                     {% csrf_token %}
                     <h2> Get Reports</h2>
@@ -33,6 +34,7 @@
                     <label for="reports_frequency">Reports frequency:
                     </label>
                     <select id="reports_frequency" name="reports_frequency" >
+
                         <option value="daily" {% if profile.reports_frequency == 'daily' %} selected {% endif %}>
                             daily</option>
                         <option value="weekly" {% if profile.reports_frequency == 'weekly' %} selected {% endif %}>weekly</option>

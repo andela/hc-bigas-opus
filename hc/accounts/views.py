@@ -318,3 +318,7 @@ def switch_team(request, target_username):
     request.user.profile.save()
 
     return redirect("hc-checks")
+
+
+def dashboard(request):
+    return render(request, 'accounts/dashboard.html')
