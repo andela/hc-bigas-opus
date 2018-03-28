@@ -22,6 +22,17 @@ def ping(request, code):
         return HttpResponseBadRequest()
 
     check.n_pings = F("n_pings") + 1
+    if check.last_ping:
+        if (check.timeout == check.grace) and \
+                        (timezone.now() - check.last_ping) < check.timeout:
+            check.often = True
+            check.alert_job_is_too_often()
+        elif check.last_ping < timezone.now() and \
+                        (check.last_ping + check.timeout - check.grace) > timezone.now():
+            check.often = True
+            check.alert_job_is_too_often()
+        else:
+            check.often = False
     check.last_ping = timezone.now()
     if check.status in ("new", "paused"):
         check.status = "up"
@@ -106,6 +117,9 @@ def badge(request, username, signature, tag):
 
         if status == "up" and check.in_grace_period():
             status = "late"
+        
+        if check.get_status == "up":
+            status = "often"
 
         if check.get_status() == "down":
             status = "down"

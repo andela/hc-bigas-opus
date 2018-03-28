@@ -21,8 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOST = "localhost"
 SECRET_KEY = "---"
 DEBUG = True
-ALLOWED_HOSTS = []
-DEFAULT_FROM_EMAIL = 'healthchecks@example.org'
+ALLOWED_HOSTS = ['localhost', 'hc-bigas-opus-django-app.herokuapp.com']
+DEFAULT_FROM_EMAIL = 'bigasopus@gmail.com'
 USE_PAYMENTS = False
 
 
