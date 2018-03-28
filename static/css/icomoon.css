@@ -45,6 +45,9 @@
 .icon-grace:before {
   content: "\e000";
 }
+.icon-bullhorn:before {
+  content: "\1f4e2";
+}
 .icon-missing:before {
   content: "\e001";
 }
