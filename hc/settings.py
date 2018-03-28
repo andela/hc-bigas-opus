@@ -120,7 +120,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_ROOT = "http://localhost:8000" # Use local for now. Move to heroku after hosting.
+SITE_ROOT = "https://hc-bigas-opus-django-app.herokuapp.com"
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
