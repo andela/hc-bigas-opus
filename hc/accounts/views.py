@@ -166,19 +166,23 @@ def profile(request):
         elif "update_reports_allowed" in request.POST:
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
+                print(form.cleaned_data)
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
                 numofdays = 0
-                print(profile.next_report_date)
+                # print(profile.next_report_date)
                 print(profile.reports_allowed)
-                if profile.reports_allowed == 'daily':
+                if form.cleaned_data["reports_frequency"]  == "daily":
                     print("daily------------->")
                     numofdays = 1
-                if profile.reports_allowed == 'weekly':
+                    profile.reports_frequency = "daily"
+                if form.cleaned_data["reports_frequency"]  == "weekly":
                     print("weekly------------->")
                     numofdays = 7
-                if profile.reports_allowed == 'monthly':
+                    profile.reports_frequency = "weekly"
+                if form.cleaned_data["reports_frequency"]  == "monthly":
                     print("monthly------------->")
                     numofdays = 30
+                    profile.reports_frequency = "monthly"
                 print(profile)
                 print("saving----->")
                 now = timezone.now()
