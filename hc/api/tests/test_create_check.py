@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from hc.api.models import Channel, Check
 from hc.test import BaseTestCase
@@ -92,12 +93,19 @@ class CreateCheckTestCase(BaseTestCase):
                   expected_error="wrong api_key")
 
     def test_it_rejects_non_number_timeout(self):
+        """Test if a number is used in timeout."""
         self.post({"api_key": "abc", "timeout": "oops"},
                   expected_error="timeout is not a number")
 
+    def test_it_rejects_non_number_grace_period(self):
+        """Test if a number is used in grace period."""
+        r=self.post({"api_key": "abc", "grace": "oops"},
+                  expected_error="grace is not a number")
+        self.assertEqual(r.status_code, 400)          
     def test_it_rejects_non_string_name(self):
-        self.post({"api_key": "abc", "name": False},
+        r=self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
+        self.assertEqual(r.status_code, 400)          
 
     ### Test for the assignment of channels
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
@@ -154,3 +162,9 @@ class CreateCheckTestCase(BaseTestCase):
         check.assign_all_channels()
 
         self.assertEqual(check.channel_set.count(), 1)
+    def test_if_value_of_timeout_is_created(self):
+        """Test if the timeout is added in the model.""" 
+        check = Check(timeout="3600")
+        check.save()
+        test_check = Check.objects.filter(timeout="3600").first()
+        self.assertEqual(test_check.timeout, datetime.timedelta(0, 3600))
