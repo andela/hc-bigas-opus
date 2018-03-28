@@ -167,20 +167,24 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
-                day = 30
+                numofdays = 0
                 print(profile.next_report_date)
                 print(profile.reports_allowed)
                 if profile.reports_allowed == 'daily':
                     print("daily------------->")
-                    day = 1
+                    numofdays = 1
                 if profile.reports_allowed == 'weekly':
                     print("weekly------------->")
-                    day = 7
+                    numofdays = 7
+                if profile.reports_allowed == 'monthly':
+                    print("monthly------------->")
+                    numofdays = 30
                 print(profile)
                 print("saving----->")
                 now = timezone.now()
                 print(now )
-                profile.send_report(day)
+                print (now + timedelta(days = numofdays))
+                profile.next_report_date = now + timedelta(days = numofdays)
                 profile.save()
                 print("saved---------->")
                 print(profile.next_report_date)
