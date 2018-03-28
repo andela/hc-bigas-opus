@@ -106,6 +106,7 @@ def pause(request, code):
 
 @never_cache
 def badge(request, username, signature, tag):
+    """Check cron job status and pass correct badge to frontend"""
     if not check_signature(username, tag, signature):
         return HttpResponseBadRequest()
 

@@ -82,6 +82,7 @@ class Check(models.Model):
         return errors
 
     def get_status(self):
+        """Check the status of the cron job and return the value"""
         if self.status in ("new", "paused"):
             return self.status
 
