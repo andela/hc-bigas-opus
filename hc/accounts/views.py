@@ -164,7 +164,16 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
-                profile.save()
+                if profile.reports_allowed == 'daily':
+                    days = 1
+                    profile.save(days)
+                elif profile.reports_allowed == 'weekly':
+                    days = 7
+                    profile.save(days)
+                elif profile.reports_allowed == 'monthly':
+                    days = 30
+                    profile.save(days)
+                # profile.save(days)
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
