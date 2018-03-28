@@ -56,6 +56,11 @@ table.table tr > th.th-name {
     color: #888;
     white-space: nowrap;
 }
+.checks-sub-subline {
+    color: #999;
+    font-size: 12px;
+    white-space: nowrap;
+}
 
 .check-menu {
     visibility: hidden;
