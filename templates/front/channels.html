@@ -32,6 +32,7 @@
             {% if ch.kind == "slack" %} Slack {% endif %}
             {% if ch.kind == "hipchat" %} HipChat {% endif %}
             {% if ch.kind == "sms" %} SMS {% endif %}
+            {% if ch.kind == "telegram" %} Telegram {% endif %}
             {% if ch.kind == "pd" %} PagerDuty {% endif %}
             {% if ch.kind == "po" %} Pushover {% endif %}
             {% if ch.kind == "victorops" %} VictorOps {% endif %}
@@ -49,6 +50,8 @@
                     {{ ch.value }}
                 {% elif ch.kind == "victorops" %}
                     <span class="preposition">Post URL</span>
+                    {{ ch.value }}
+                {% elif ch.kind == "Telegram" %}
                     {{ ch.value }}
                 {% elif ch.kind == "po" %}
                     <span class="preposition">user key</span>
@@ -181,6 +184,14 @@
 
             {% comment %} change this link to the sms link {% endcomment %}
             <a href="{% url 'hc-add-sms' %}" class="btn btn-primary">Add Integration</a>
+        </li>
+        <li>
+            <img src="{% static 'img/integrations/telegram.png' %}"class="icon" alt="telegram icon" />
+    
+            <h2>Telegram</h2>
+            <p>On-call scheduling, alerting, and incident tracking.</p>
+
+            <a href="{% url 'hc-add-telegram' %}" class="btn btn-primary">Add Integration</a>
         </li>
         <li>
             <img src="{% static 'img/integrations/victorops.png' %}"
