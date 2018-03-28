@@ -53,11 +53,11 @@ class Profile(models.Model):
         self.api_key = base64.urlsafe_b64encode(os.urandom(24))
         self.save()
 
-    def send_report(self, days):
+    def send_report(self, day):
         # reset next report date first:
         now = timezone.now()
-        self.next_report_date = now + timedelta(seconds=days)
-        print(days)
+        self.next_report_date = now + timedelta(days=day)
+        print(day)
         self.save()
 
         token = signing.Signer().sign(uuid.uuid4())

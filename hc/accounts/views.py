@@ -1,6 +1,9 @@
 import uuid
 import re
 
+from datetime import timedelta
+from django.utils import timezone
+
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -54,7 +57,7 @@ def _associate_demo_check(request, user):
 
 def login(request):
     bad_credentials = False
-    
+
     # check if user is authenticated
     #if authenticated redirect to /checks/
 
@@ -164,16 +167,23 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                day = 30
+                print(profile.next_report_date)
+                print(profile.reports_allowed)
                 if profile.reports_allowed == 'daily':
-                    days = 1
-                    profile.save(days)
-                elif profile.reports_allowed == 'weekly':
-                    days = 7
-                    profile.save(days)
-                elif profile.reports_allowed == 'monthly':
-                    days = 30
-                    profile.save(days)
-                # profile.save(days)
+                    print("daily------------->")
+                    day = 1
+                if profile.reports_allowed == 'weekly':
+                    print("weekly------------->")
+                    day = 7
+                print(profile)
+                print("saving----->")
+                now = timezone.now()
+                print(now )
+                profile.send_report(day)
+                profile.save()
+                print("saved---------->")
+                print(profile.next_report_date)
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
