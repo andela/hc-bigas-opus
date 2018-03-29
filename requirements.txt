@@ -19,12 +19,11 @@ premailer==2.9.6
 psycopg2==2.7.4
 PyJWT==1.6.1
 PySocks==1.6.8
-python-telegram-bot==10.0.1
+python-telegram-bot==9.0.0
 pytz==2018.3
 rcssmin==1.0.6
 requests==2.9.1
 rjsmin==1.0.12
 six==1.11.0
-telegram==0.0.1
 twilio==6.7.0
 whitenoise==3.3.1
