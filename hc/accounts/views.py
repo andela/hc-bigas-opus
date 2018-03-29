@@ -180,9 +180,7 @@ def profile(request):
                 if form.cleaned_data["reports_frequency"]  == "monthly":
                     numofdays = 30
                     profile.reports_frequency = "monthly"
-                now = timezone.now()
-                profile.next_report_date = now + timedelta(days = numofdays)
-                profile.send_report()
+                profile.send_report(numofdays)
                 profile.save()
                 print(profile.next_report_date)
                 messages.success(request, "Your settings have been updated!")
