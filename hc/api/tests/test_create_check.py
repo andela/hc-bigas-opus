@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from hc.api.models import Channel, Check
 from hc.test import BaseTestCase
@@ -92,20 +93,35 @@ class CreateCheckTestCase(BaseTestCase):
                   expected_error="wrong api_key")
 
     def test_it_rejects_non_number_timeout(self):
+        """Test if a number is used in timeout."""
         self.post({"api_key": "abc", "timeout": "oops"},
                   expected_error="timeout is not a number")
 
+    def test_it_rejects_non_number_grace_period(self):
+        """Test if a number is used in grace period."""
+        r=self.post({"api_key": "abc", "grace": "oops"},
+                  expected_error="grace is not a number")
+        self.assertEqual(r.status_code, 400)          
     def test_it_rejects_non_string_name(self):
-        self.post({"api_key": "abc", "name": False},
+        r=self.post({"api_key": "abc", "name": False},
                   expected_error="name is not a string")
+        self.assertEqual(r.status_code, 400)          
 
     ### Test for the assignment of channels
     ### Test for the 'timeout is too small' and 'timeout is too large' errors
+    def test_it_rejects_small_timeout_length(self):
+        """Testing if the length is  small than 60 seconds."""
+        r = self.post({
+            "api_key":"abc", "timeout":59
+        })
+        response_payload = r.json()
 
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(response_payload["error"], "timeout is too small")
     def test_it_rejects_timeout_length(self):
         """Testing if the length is too large"""
         r = self.post({
-            "api_key": "abc", "timeout": 10000000
+            "api_key": "abc", "timeout": 200000000
         })
         response_payload = r.json()
 
@@ -122,6 +138,14 @@ class CreateCheckTestCase(BaseTestCase):
         self.assertEqual(r.status_code, 400)
         self.assertEqual(response_payload["error"], "timeout is too small")
 
+    def test_it_accept_timeout_length(self):
+        """Testing if it accepts minimum 1 minute as minimum value."""
+        r = self.post({
+            "api_key":"abc", "timeout":3600
+        })
+        response_payload = r.json()
+
+        self.assertEqual(r.status_code, 201)
      ### Test for the assignment of channels
     def test_it_assigns_channels(self):
         channel = Channel(user=self.alice)
@@ -138,3 +162,9 @@ class CreateCheckTestCase(BaseTestCase):
         check.assign_all_channels()
 
         self.assertEqual(check.channel_set.count(), 1)
+    def test_if_value_of_timeout_is_created(self):
+        """Test if the timeout is added in the model.""" 
+        check = Check(timeout="3600")
+        check.save()
+        test_check = Check.objects.filter(timeout="3600").first()
+        self.assertEqual(test_check.timeout, datetime.timedelta(0, 3600))
