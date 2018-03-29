@@ -158,6 +158,12 @@ PUSHOVER_EMERGENCY_EXPIRATION = 86400
 PUSHBULLET_CLIENT_ID = "t1"
 PUSHBULLET_CLIENT_SECRET = "s1"
 
+TWILIO_ACCOUNT_SID = None
+TWILIO_AUTH_TOKEN = None
+TWILIO_NUMBER = None
+
+TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
+
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:

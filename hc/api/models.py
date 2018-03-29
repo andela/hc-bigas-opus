@@ -24,7 +24,7 @@ DEFAULT_GRACE = td(hours=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"))
+                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -182,13 +182,17 @@ class Channel(models.Model):
             return transports.Pushbullet(self)
         elif self.kind == "po":
             return transports.Pushover(self)
+        elif self.kind == "sms":
+            return transports.SMS(self)
+        elif self.kind == "telegram":
+            return transports.Telegram(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
-    def notify(self, check):
+    def notify(self, check, api=None):
         # Make 3 attempts--
         for x in range(0, 3):
-            error = self.transport.notify(check) or ""
+            error = self.transport.notify(check, api) or ""
             if error in ("", "no-op"):
                 break  # Success!
 

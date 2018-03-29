@@ -31,6 +31,8 @@
             {% if ch.kind == "webhook" %} Webhook {% endif %}
             {% if ch.kind == "slack" %} Slack {% endif %}
             {% if ch.kind == "hipchat" %} HipChat {% endif %}
+            {% if ch.kind == "sms" %} SMS {% endif %}
+            {% if ch.kind == "telegram" %} Telegram {% endif %}
             {% if ch.kind == "pd" %} PagerDuty {% endif %}
             {% if ch.kind == "po" %} Pushover {% endif %}
             {% if ch.kind == "victorops" %} VictorOps {% endif %}
@@ -48,6 +50,8 @@
                     {{ ch.value }}
                 {% elif ch.kind == "victorops" %}
                     <span class="preposition">Post URL</span>
+                    {{ ch.value }}
+                {% elif ch.kind == "Telegram" %}
                     {{ ch.value }}
                 {% elif ch.kind == "po" %}
                     <span class="preposition">user key</span>
@@ -153,6 +157,15 @@
             <a href="{% url 'hc-add-webhook' %}" class="btn btn-primary">Add Integration</a>
         </li>
         <li>
+            <img src="{% static 'img/integrations/hipchat.png' %}"
+                class="icon" alt="HipChat icon" />
+
+            <h2>HipChat</h2>
+            <p>Group and private chat, file sharing, and integrations.</p>
+
+            <a href="{% url 'hc-add-hipchat' %}" class="btn btn-primary">Add Integration</a>
+        </li>
+        <li>
             <img src="{% static 'img/integrations/pd.png' %}"
                 class="icon" alt="PagerDuty icon" />
 
@@ -161,14 +174,24 @@
 
             <a href="{% url 'hc-add-pd' %}" class="btn btn-primary">Add Integration</a>
         </li>
+        {% comment %} send sms {% endcomment %}
         <li>
             <img src="{% static 'img/integrations/hipchat.png' %}"
-                class="icon" alt="HipChat icon" />
+                class="icon" alt="SMS icon" />
 
-            <h2>HipChat</h2>
-            <p>Group and private chat, file sharing, and integrations.</p>
+            <h2>SMS</h2>
+            <p>Send sms alerting, and incident tracking.</p>
 
-            <a href="{% url 'hc-add-hipchat' %}" class="btn btn-primary">Add Integration</a>
+            {% comment %} change this link to the sms link {% endcomment %}
+            <a href="{% url 'hc-add-sms' %}" class="btn btn-primary">Add Integration</a>
+        </li>
+        <li>
+            <img src="{% static 'img/integrations/telegram.png' %}"class="icon" alt="telegram icon" />
+    
+            <h2>Telegram</h2>
+            <p>On-call scheduling, alerting, and incident tracking.</p>
+
+            <a href="{% url 'hc-add-telegram' %}" class="btn btn-primary">Add Integration</a>
         </li>
         <li>
             <img src="{% static 'img/integrations/victorops.png' %}"

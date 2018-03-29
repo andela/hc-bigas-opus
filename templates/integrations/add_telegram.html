@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load compress humanize staticfiles hc_extras %}
+
+{% block title %}Notification Channels - healthchecks.io{% endblock %}
+
+
+{% block content %}
+<div class="row">
+<div class="col-sm-12">
+    <h1>Telegram</h1>
+
+    <p>Get a telegram message when check goes up or down.</p>
+
+    <p>
+        <strong>Tip:</strong>
+        Add multiple phone numbers, to a group to notify multiple team members.
+    </p>
+
+    <div>
+        <strong>Instructions.</strong>
+        <ul>
+            <li>Create a group on telegram</li>
+            <li>Search and add @hckaliiBot and @FalconGate_Bot to your group</li>
+            <li>Get the chat id of your group by sending " /get_my_id " in your group</li>
+            <li>Enter the chat_id returned in the form below</li>
+        </ul>
+    </div>
+
+    <h2>Integration Settings</h2>
+
+    <form method="post" class="form-horizontal" action="{% url 'hc-add-channel' %}">
+        {% csrf_token %}
+        <input type="hidden" name="kind" value="telegram" />
+        <div class="form-group">
+            <label for="id_telegram" class="col-sm-2 control-label">Chat id</label>
+            <div class="col-sm-3">
+                <input
+                    id="id_telegram"
+                    type="text"
+                    class="form-control"
+                    name="value"
+                    placeholder="-XXXXXXX">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Save Integration</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+{% endcompress %}
+{% endblock %}
