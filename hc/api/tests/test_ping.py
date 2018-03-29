@@ -1,6 +1,4 @@
 from datetime import timedelta
-from freezegun import freeze_time
-
 
 from django.test import Client, TestCase
 
