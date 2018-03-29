@@ -17,7 +17,8 @@ STATUSES = (
     ("up", "Up"),
     ("down", "Down"),
     ("new", "New"),
-    ("paused", "Paused")
+    ("paused", "Paused"),
+    ("often", "Often")
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
@@ -51,6 +52,7 @@ class Check(models.Model):
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
+    often = models.BooleanField(default=False)
 
     def name_then_code(self):
         if self.name:
@@ -68,7 +70,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down"):
+        if self.status not in ("up", "down", "often"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -80,10 +82,13 @@ class Check(models.Model):
         return errors
 
     def get_status(self):
+        """Check the status of the cron job and return the value"""
         if self.status in ("new", "paused"):
             return self.status
 
         now = timezone.now()
+        if self.often and ((now - self.last_ping) < (self.timeout + self.grace)):
+            return "often"
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
@@ -97,6 +102,12 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+    
+    def alert_job_is_too_often(self):
+        """Alert user if cron jobs run too often"""
+        self.status = "often"
+        self.send_alert()
+        self.status = "up"
 
     def assign_all_channels(self):
         if self.user:

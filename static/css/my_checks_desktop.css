@@ -12,7 +12,6 @@
     font-style: italic;
 }
 
-
 table.table tr > th.th-name {
     padding-left: 21px;
 }
@@ -117,4 +116,3 @@ tr:hover .copy-link {
     line-height: 36px;
     color: #333;
 }
-
