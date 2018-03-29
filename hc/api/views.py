@@ -126,7 +126,5 @@ def badge(request, username, signature, tag):
             status = "down"
             break
 
-    print(status)
-    print(tag)
     svg = get_badge_svg(tag, status)
     return HttpResponse(svg, content_type="image/svg+xml")

@@ -1,6 +1,12 @@
+from datetime import timedelta
+from freezegun import freeze_time
+
+
 from django.test import Client, TestCase
 
 from hc.api.models import Check, Ping
+
+from django.utils import timezone
 
 
 class PingTestCase(TestCase):
@@ -88,3 +94,12 @@ class PingTestCase(TestCase):
         r = csrf_client.head("/ping/%s/" % self.check.code)
 
         self.assertEqual(r.status_code, 200)
+
+    def test_it_handles_often(self):
+        """Test it can note when a job runs too often"""
+        self.check.status = "up"
+        self.check.last_ping = timezone.now() - timedelta(minutes=1200)
+        self.check.save()
+        r = self.client.get("/ping/%s/" % self.check.code)
+        self.check.refresh_from_db()
+        self.assertTrue(self.check.often)

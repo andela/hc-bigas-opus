@@ -1,4 +1,5 @@
 {% load hc_extras humanize %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <table id="checks-table" class="table hidden-xs">
     <tr>
         <th></th>
@@ -23,7 +24,7 @@
             {% elif check.in_grace_period %}
                 <span class="status icon-grace"></span>
             {% elif check.get_status == "often" %}
-                <span class="glyphicon glyphicon-hourglass"></span>
+                <span class="fa fa-history" style="font-size:24px;color: #800080"</span>
             {% elif check.get_status == "up" %}
                 <span class="status icon-up"></span>
             {% elif check.get_status == "down" %}

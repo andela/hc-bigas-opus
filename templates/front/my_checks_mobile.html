@@ -29,14 +29,12 @@
                         <span class="label label-default">PAUSED</span>
                     {% elif check.in_grace_period %}
                         <span class="label label-warning">LATE</span>
-                    {% elif check.get_status %}
-                        <span class="label label-danger">OFTEN</span>
                     {% elif check.get_status == "up" %}
                         <span class="label label-success">UP</span>
                     {% elif check.get_status == "down" %}
                         <span class="label label-danger">DOWN</span>
                     {% elif check.get_status == "often" %}
-                        <span class="label label-danger">OFTEN</span>
+                        <span class="label label-info">OFTEN</span>
                     {% endif %}
                 </td>
             </tr>
