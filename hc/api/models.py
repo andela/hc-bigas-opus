@@ -97,10 +97,12 @@ class Check(models.Model):
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
-        elif self.last_ping + self.timeout + self.self + self.nag < now:
+        
+        elif self.last_ping + self.timeout + self.grace + self.nag < now:
             return "down"
-        elif self.last_ping + self.timeout + self.self + self.nag > now:
+        elif self.last_ping + self.timeout + self.grace + self.nag > now:
             return "nag"
+    
         return "down"
 
     def in_grace_period(self):
