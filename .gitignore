@@ -14,5 +14,4 @@ hc-venv/
 staticfiles/
 venv/
 
-ngrok
 .env
