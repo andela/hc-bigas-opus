@@ -118,7 +118,7 @@ def badge(request, username, signature, tag):
 
         if status == "up" and check.in_grace_period():
             status = "late"
-        
+
         if check.get_status == "up":
             status = "often"
 
@@ -126,5 +126,7 @@ def badge(request, username, signature, tag):
             status = "down"
             break
 
+    print(status)
+    print(tag)
     svg = get_badge_svg(tag, status)
     return HttpResponse(svg, content_type="image/svg+xml")
