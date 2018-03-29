@@ -30,7 +30,7 @@ class Command(BaseCommand):
     def handle_one_run(self):
         now = timezone.now()
         # time_passed = now - profile.next_report_date
-        month_before = now - timedelta(days=30)
+        month_before = now - timedelta(days=1)
 
         report_due = Q(next_report_date__lt=now)
         report_not_scheduled = Q(next_report_date__isnull=True)

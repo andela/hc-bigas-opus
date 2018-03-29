@@ -182,7 +182,7 @@ def profile(request):
                     profile.reports_frequency = "monthly"
                 profile.send_report(numofdays)
                 profile.save()
-                print(profile.next_report_date)
+                print('next',profile.next_report_date)
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:

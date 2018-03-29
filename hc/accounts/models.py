@@ -57,8 +57,9 @@ class Profile(models.Model):
     def send_report(self, days):
         # reset next report date first:
         now = timezone.now()
-        self.next_report_date = now + timedelta(days=days)
+        self.next_report_date = now - timedelta(days=days)
         self.save()
+        # print('next', profile.next_report_date)
 
         token = signing.Signer().sign(uuid.uuid4())
         path = reverse("hc-unsubscribe-reports", args=[self.user.username])
