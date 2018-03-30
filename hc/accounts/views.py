@@ -184,7 +184,6 @@ def profile(request):
                     profile.reports_frequency = "monthly"
                 profile.send_report(numofdays)
                 profile.save()
-                print('next',profile.next_report_date)
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
             if not profile.team_access_allowed:
@@ -314,9 +313,11 @@ def switch_team(request, target_username):
 
 
 def dashboard(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    profile = request.user.profile
+    q = Check.objects.filter(user=request.team.user)
+    q = q.filter(last_ping__isnull=False)
 
+    checks = list(q)
     counter = Counter()
     down_tags, grace_tags = set(), set()
     for check in checks:
@@ -339,6 +340,7 @@ def dashboard(request):
         "tags": counter.most_common(),
         "down_tags": down_tags,
         "grace_tags": grace_tags,
+        "reports_allowed": profile.reports_allowed,
         "ping_endpoint": settings.PING_ENDPOINT
     }
 

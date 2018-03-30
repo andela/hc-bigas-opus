@@ -1,4 +1,7 @@
+import json
+
 from django.core import mail
+from django.utils import timezone
 
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
@@ -22,7 +25,10 @@ class ProfileTestCase(BaseTestCase):
         ### Assert that the email was sent and check email content
 
     def test_it_sends_report(self):
-        '''This Tests ensure the user can set the durtions they want to recieve the reports''' 
+        '''
+        This Tests ensure the user can set the durtions they want to recieve 
+        the reports
+        ''' 
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
@@ -30,12 +36,22 @@ class ProfileTestCase(BaseTestCase):
         r = self.client.post("/accounts/profile/", form)
 
         assert r.status_code == 302
-
-        # # for days in durations.values():
         #     self.alice.profile.send_report(days)
         # ###Assert that the email was sent and check email content
-        # self.assertEqual(len(mail.outbox), 3)
-        # self.assertEqual(mail.outbox[0].subject, "Monthly Report")
+
+    def test_you_can_view_report(self):
+        '''Check if you can view report on the dashboard'''
+        self.client.login(username="alice@example.org", password="password")
+        check = Check(name="Test Check", user=self.alice)
+        check.save()     
+
+        check.last_ping = timezone.now()
+        check.status = "up"
+        check.save()
+        
+        res = self.client.get('/accounts/dashboard/')
+        self.assertTrue(200, res.status_code)
+        self.assertIn("Test Check", str(res.content))
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")

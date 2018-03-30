@@ -39,22 +39,6 @@
                         <option value="weekly" {% if profile.reports_frequency == 'weekly' %} selected {% endif %}>weekly</option>
                         <option value="monthly" {% if profile.reports_frequency == 'monthly' %} selected {% endif %}>monthly</option>
                     </select>
-                    <!-- <label>
-                        <input name="daily_reports" value='daily' type="radio"
-                            {% if profile.reports_frequency == 'daily' %} checked {% endif %}>
-                            daily
-                    </label>
-                    <label>
-                        <input name="weekly_reports" value='weekly' type="radio"
-                        {% if profile.reports_frequency == 'weekly' %} checked {% endif %}>
-                        weekly
-                    </label>
-                    <label>
-                        <input name="monthly_reports" value='monthly' type="radio"
-                        {% if profile.reports_frequency == 'monthly' %} checked {% endif %}>
-                        Monthly
-                    </label> -->
-
                     <button
                         name="update_reports_allowed"
                         type="submit"
