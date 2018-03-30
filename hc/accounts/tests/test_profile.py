@@ -1,4 +1,5 @@
 import json
+import re, cgi
 
 from django.core import mail
 from django.utils import timezone
@@ -6,6 +7,7 @@ from django.utils import timezone
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
 from hc.api.models import Check
+
 
 
 class ProfileTestCase(BaseTestCase):
@@ -26,18 +28,32 @@ class ProfileTestCase(BaseTestCase):
 
     def test_it_sends_report(self):
         '''
-        This Tests ensure the user can set the durtions they want to recieve 
-        the reports
+        This Tests ensure the reports can be sent via email
         ''' 
+        self.client.login(username="alice@example.org", password="password")
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
-        form = {"reports_frequency": "now"}
+        form = {"update_reports_allowed":"1" ,"reports_frequency": "now"}
         r = self.client.post("/accounts/profile/", form)
+        self.assertEquals(200,  r.status_code)
+        ###Assert that the email was sent and check email content --Done
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Monthly Report")
 
-        assert r.status_code == 302
-        #     self.alice.profile.send_report(days)
-        # ###Assert that the email was sent and check email content
+    def test_you_can_set_report_period(self):
+        '''
+        This test checks that the user is able to set the periods they want to 
+        be recieving reports
+        '''
+        self.client.login(username="alice@example.org", password="password")
+        check = Check(name="Test Check", user=self.alice)
+        check.save()
+
+        form = {"update_reports_allowed": "1", "reports_frequency": "weekly"}
+        res = self.client.post("/accounts/profile/", form)
+        self.assertEquals(200, res.status_code)
+        self.assertEquals("monthly", self.alice.profile.reports_frequency)
 
     def test_you_can_view_report(self):
         '''Check if you can view report on the dashboard'''

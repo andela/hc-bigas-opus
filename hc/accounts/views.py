@@ -312,6 +312,7 @@ def switch_team(request, target_username):
     return redirect("hc-checks")
 
 
+@login_required
 def dashboard(request):
     profile = request.user.profile
     q = Check.objects.filter(user=request.team.user)
