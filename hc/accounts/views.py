@@ -3,7 +3,9 @@ import re
 
 from datetime import timedelta
 from django.utils import timezone
+from collections import Counter
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -312,17 +314,33 @@ def switch_team(request, target_username):
 
 
 def dashboard(request):
-    now = timezone.now()
-# time_passed = now - profile.next_report_date
-    month_before = now - timedelta(days=30)
+    q = Check.objects.filter(user=request.team.user).order_by("created")
+    checks = list(q)
 
-    report_due = Q(next_report_date__lt=now)
-    report_not_scheduled = Q(next_report_date__isnull=True)
+    counter = Counter()
+    down_tags, grace_tags = set(), set()
+    for check in checks:
+        status = check.get_status()
+        for tag in check.tags_list():
+            if tag == "":
+                continue
 
-    q = Profile.objects.filter(report_due | report_not_scheduled)
-    q = q.filter(reports_allowed=True)
-    q = q.filter(user__date_joined__lt=month_before)
+            counter[tag] += 1
+
+            if status == "down":
+                down_tags.add(tag)
+            elif check.in_grace_period():
+                grace_tags.add(tag)
+
     ctx = {
-        'q':q,
+        "page": "checks",
+        "checks": checks,
+        "now": timezone.now(),
+        "tags": counter.most_common(),
+        "down_tags": down_tags,
+        "grace_tags": grace_tags,
+        "ping_endpoint": settings.PING_ENDPOINT
     }
+
+    
     return render(request, 'accounts/dashboard.html', ctx)
