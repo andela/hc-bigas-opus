@@ -39,7 +39,7 @@ class ProfileTestCase(BaseTestCase):
         self.assertEquals(200,  r.status_code)
         ###Assert that the email was sent and check email content --Done
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "Monthly Report")
+        self.assertEqual(mail.outbox[0].subject, "Recent Report")
 
     def test_you_can_set_report_period(self):
         '''
