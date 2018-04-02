@@ -18,8 +18,8 @@ STATUSES = (
     ("down", "Down"),
     ("new", "New"),
     ("paused", "Paused"),
-    ("often", "Often")
-    ("nag","Nag")
+    ("often", "Often"),
+    ("nag", "Nag")
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
