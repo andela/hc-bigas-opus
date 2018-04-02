@@ -79,3 +79,6 @@ class MyChecksTestCase(BaseTestCase):
         # Mobile
         self.assertContains(r, "label-info")
         self.assertContains(r, "icon-bullhorn")
+
+        # Mobile 
+        self.assertContains(r,"label-nag")
