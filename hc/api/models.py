@@ -74,8 +74,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down", "often"):
-        if self.status not in ("up", "down","nag"):
+        if self.status not in ("up", "down", "often", "nag"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -97,12 +96,11 @@ class Check(models.Model):
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
-        
-        elif self.last_ping + self.timeout + self.grace + self.nag < now:
-            return "nag"
-        else:
+        elif self.last_ping + self.timeout + self.self + self.nag < now:
             return "down"
-
+        elif self.last_ping + self.timeout + self.self + self.nag > now:
+            return "nag"
+        return "down"
 
     def in_grace_period(self):
         if self.status in ("new", "paused"):
@@ -136,7 +134,6 @@ class Check(models.Model):
             "tags": self.tags,
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
-            "nag": int(self.nag.total_seconds()),
             "n_pings": self.n_pings,
             "status": self.get_status()
         }
