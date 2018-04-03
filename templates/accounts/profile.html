@@ -34,15 +34,19 @@
                     <label for="reports_frequency">Reports frequency:
                     </label>
                     <select id="reports_frequency" name="reports_frequency" >
+                        <!-- Request report to be sent immediately -->
                         <option value="now" {% if profile.reports_frequency == 'now' %} selected {% endif %}> 
                         Now 
                         </option>
+                        <!-- Reguest Report to be sent daily -->
                         <option value="daily" {% if profile.reports_frequency == 'daily' %} selected {% endif %}>
                             daily
                         </option>
+                        <!-- Request Report to be sent weekly -->
                         <option value="weekly" {% if profile.reports_frequency == 'weekly' %} selected {% endif %}>
                             weekly
                         </option>
+                        <!-- Request Report to be sent on monthly -->
                         <option value="monthly" {% if profile.reports_frequency == 'monthly' %} selected {% endif %}>
                             monthly
                         </option>
