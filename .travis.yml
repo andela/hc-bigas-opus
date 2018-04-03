@@ -11,7 +11,7 @@ env:
 before_script:
   - psql -c 'CREATE DATABASE hc;' -U postgres
 script:
-  - python manage.py makemigrations --merge
+  - python manage.py makemigrations --merge --noinput
   - python manage.py collectstatic --noinput
   - coverage run --omit=*/tests/* --source=hc manage.py test
 after_success: coveralls
