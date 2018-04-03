@@ -27,7 +27,8 @@ DEFAULT_NAG=td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"))
+                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"),
+                 ("shopify", "Shopify"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -115,7 +116,7 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
-    
+
     def alert_job_is_too_often(self):
         """Alert user if cron jobs run too often"""
         self.status = "often"
@@ -216,6 +217,8 @@ class Channel(models.Model):
             return transports.SMS(self)
         elif self.kind == "telegram":
             return transports.Telegram(self)
+        elif self.kind == "shopify":
+            return transports.Shopify(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
