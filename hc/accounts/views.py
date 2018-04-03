@@ -1,6 +1,11 @@
 import uuid
 import re
 
+from datetime import timedelta
+from django.utils import timezone
+from collections import Counter
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -54,7 +59,7 @@ def _associate_demo_check(request, user):
 
 def login(request):
     bad_credentials = False
-    
+
     # check if user is authenticated
     #if authenticated redirect to /checks/
 
@@ -164,6 +169,20 @@ def profile(request):
             form = ReportSettingsForm(request.POST)
             if form.is_valid():
                 profile.reports_allowed = form.cleaned_data["reports_allowed"]
+                numofdays = 0
+                if form.cleaned_data["reports_frequency"] == "now":
+                    numofdays=0
+                    profile.reports_frequency = "now"
+                if form.cleaned_data["reports_frequency"]  == "daily":
+                    numofdays = 1
+                    profile.reports_frequency = "daily"
+                if form.cleaned_data["reports_frequency"]  == "weekly":
+                    numofdays = 7
+                    profile.reports_frequency = "weekly"
+                if form.cleaned_data["reports_frequency"]  == "monthly":
+                    numofdays = 30
+                    profile.reports_frequency = "monthly"
+                profile.send_report(numofdays)
                 profile.save()
                 messages.success(request, "Your settings have been updated!")
         elif "invite_team_member" in request.POST:
@@ -291,3 +310,40 @@ def switch_team(request, target_username):
     request.user.profile.save()
 
     return redirect("hc-checks")
+
+
+@login_required
+def dashboard(request):
+    profile = request.user.profile
+    q = Check.objects.filter(user=request.team.user)
+    q = q.filter(last_ping__isnull=False)
+
+    checks = list(q)
+    counter = Counter()
+    down_tags, grace_tags = set(), set()
+    for check in checks:
+        status = check.get_status()
+        for tag in check.tags_list():
+            if tag == "":
+                continue
+
+            counter[tag] += 1
+
+            if status == "down":
+                down_tags.add(tag)
+            elif check.in_grace_period():
+                grace_tags.add(tag)
+
+    ctx = {
+        "page": "checks",
+        "checks": checks,
+        "now": timezone.now(),
+        "tags": counter.most_common(),
+        "down_tags": down_tags,
+        "grace_tags": grace_tags,
+        "reports_allowed": profile.reports_allowed,
+        "ping_endpoint": settings.PING_ENDPOINT
+    }
+
+    
+    return render(request, 'accounts/dashboard.html', ctx)

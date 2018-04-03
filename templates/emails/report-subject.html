@@ -1,2 +1,5 @@
-Monthly Report
+{% if period == 'now' %} Recent Report
+{% else %}
+{{period}} Report
+{% endif %}
 

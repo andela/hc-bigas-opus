@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load compress staticfiles %}
+
+{% block title %}Dashboard - healthchecks.io{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h1>
+        {% if request.team == request.user.profile %}
+        {{ reports_allowed.title }} Reports
+        {% else %}
+            {{ request.team.team_name }}
+        {% endif %}
+        </h1>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-sm-12">
+
+
+    {% if checks %}
+        {% include "front/my_reports_mobile.html" %}
+        {% include "front/my_reports_desktop.html" %}
+        
+    {% else %}
+    <div class="alert alert-info">You don't have any reports yet.</div>
+    {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{% compress js %}
+<script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/nouislider.min.js' %}"></script>
+<script src="{% static 'js/clipboard.min.js' %}"></script>
+<script src="{% static 'js/checks.js' %}"></script>
+
+{% endcompress %}
+{% endblock %}

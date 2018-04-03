@@ -1,0 +1,76 @@
+{% load hc_extras humanize %}
+<table id="checks-table" class="table hidden-xs">
+    <tr>
+        <th></th>
+        <th class="th-name">Name</th>
+        <th>Ping URL</th>
+        <th>Last Ping</th>
+        <th></th>
+    </tr>
+    {% for check in checks %}
+    <tr class="checks-row">
+        <td class="indicator-cell">
+            {% if check.get_status == "new" %}
+                <span class="status icon-up new"
+                    data-toggle="tooltip" title="New. Has never received a ping."></span>
+            {% elif check.get_status == "paused" %}
+                <span class="status icon-paused"
+                    data-toggle="tooltip" title="Monitoring paused. Ping to resume."></span>
+            {% elif check.in_grace_period %}
+                <span class="status icon-grace"></span>
+            {% elif check.get_status == "up" %}
+                <span class="status icon-up"></span>
+            {% elif check.get_status == "often" %}
+                <span class="status icon-down" style="color:#e2d948"></span>
+            {% elif check.get_status == "down" %}
+                <span class="status icon-down"></span>
+            {% endif %}
+        </td>
+        <td class="name-cell">
+            <div data-name="{{ check.name }}"
+                    data-tags="{{ check.tags }}"
+                    data-url="{% url 'hc-update-name' check.code %}"
+                    class="my-checks-name {% if not check.name %}unnamed{% endif %}"
+                    id="check-{{ check.priority }}">
+                <div>{{ check.name|default:"unnamed" }}</div>
+                {% for tag in check.tags_list %}
+                    <span class="label label-tag">{{ tag }}</span>
+                    <br/>
+                {% endfor %}
+                {% if check.priority == 0 %}                
+                <span class="label label label-danger" id="{{ check.priority }}">
+                    High priority
+                </span>
+                {% endif %}
+                {% if check.priority == 1 %}                
+                <span class="label label label-warning" id="{{ check.priority }}">
+                    Medium priority
+                </span>
+                {% endif %}
+                {% if check.priority == 2 %}                
+                <span class="label label label-info" id="{{ check.priority }}">
+                    Low priority
+                </span>
+                {% endif %}
+            </div>
+        </td>
+        <td>
+        {% if check.last_ping %}
+            <span
+                data-toggle="tooltip"
+                title="{{ check.last_ping|date:'N j, Y, P e' }}">
+                {{ check.last_ping|naturaltime }}
+            </span>
+        {% else %}
+            Never
+        {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'hc-log' check.code %}">
+                Log
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
