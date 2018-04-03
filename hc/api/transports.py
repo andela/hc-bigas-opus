@@ -25,7 +25,7 @@ def custom_message(check):
         message = "{} is DOWN \nLast ping {}".format(message,
         str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S")))
 
-        # message = message + ' is DOWN \nLast ping ' \ 
+        # message = message + ' is DOWN \nLast ping ' \
         # + str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S"))
     else:
         message = message + ' recieved a ping, UP now'
@@ -253,3 +253,6 @@ class Telegram(HttpTransport):
         if api is None: api = Telegram.api
         send = api.send_message(
             chat_id=self.channel.value, text=custom_message(check))
+
+class Shopify(HttpTransport):
+    pass
