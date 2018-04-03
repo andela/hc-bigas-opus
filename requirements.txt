@@ -1,5 +1,4 @@
 boto==2.48.0
-certifi==2018.1.18
 cssselect==1.0.3
 cssutils==1.0.2
 dj-database-url==0.5.0
@@ -9,7 +8,6 @@ django-compressor==2.1
 django-heroku==0.3.1
 django-ses-backend==0.1.1
 djmail==0.11.0
-future==0.16.0
 futures==3.0.3
 gunicorn==19.7.1
 lxml==4.2.0
@@ -19,11 +17,11 @@ premailer==2.9.6
 psycopg2==2.7.4
 PyJWT==1.6.1
 PySocks==1.6.8
-python-telegram-bot==9.0.0
+python-dotenv==0.8.2
 pytz==2018.3
 rcssmin==1.0.6
 requests==2.9.1
 rjsmin==1.0.12
 six==1.11.0
-twilio==6.7.0
+twilio==6.11.0
 whitenoise==3.3.1
