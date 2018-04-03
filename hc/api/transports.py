@@ -243,8 +243,8 @@ class SMS(HttpTransport):
         message = client.messages.create(
             to=self.channel.value,
             from_=os.getenv('TWILIO_NUMBER'),
-            body="Healthcheck update\nLast ping: {}\nstatus:{}".format(
-                check.last_ping.strftime('%x, %X'), check.status)
+            body="Healthcheck update\n the Check {} is\n{}. \nLast ping: {}".format(
+                check.name, check.status, check.last_ping.strftime('%x, %X'))
         )
 
 class Telegram(HttpTransport):
