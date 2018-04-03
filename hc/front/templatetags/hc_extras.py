@@ -13,6 +13,7 @@ MINUTE = Unit("minute", 60)
 HOUR = Unit("hour", MINUTE.nsecs * 60)
 DAY = Unit("day", HOUR.nsecs * 24)
 WEEK = Unit("week", DAY.nsecs * 7)
+MONTH =Unit("month",WEEK.nsecs* 30)
 
 
 @register.filter
@@ -20,7 +21,7 @@ def hc_duration(td):
     remaining_seconds = int(td.total_seconds())
     result = []
 
-    for unit in (WEEK, DAY, HOUR, MINUTE):
+    for unit in (MONTH,WEEK, DAY, HOUR, MINUTE):
         if unit == WEEK and remaining_seconds % unit.nsecs != 0:
             # Say "8 days" instead of "1 week 1 day"
             continue
