@@ -4,7 +4,8 @@ $(function () {
     var HOUR = {name: "hour", nsecs: MINUTE.nsecs * 60};
     var DAY = {name: "day", nsecs: HOUR.nsecs * 24};
     var WEEK = {name: "week", nsecs: DAY.nsecs * 7};
-    var UNITS = [WEEK, DAY, HOUR, MINUTE];
+    var MONTH = {name:"month", nsecs:WEEK.nsecs * 30};
+    var UNITS = [MONTH, WEEK, DAY, HOUR, MINUTE];
 
     var secsToText = function(total) {
         var remainingSeconds = Math.floor(total);
@@ -36,15 +37,18 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
-            '33%': [3600, 3600],
-            '66%': [86400, 86400],
-            '83%': [604800, 604800],
-            'max': 2592000,
+            "25%":  [3600, 3600],
+            '35%':  [86400, 86400],
+            '45%': [604800, 604800],
+            '60%': [2592000,2592000],
+            '80%': [7776000,7776000],
+            'max': [15552000, 15552000]
         },
+        
         pips: {
             mode: 'values',
-            values: [60, 1800, 3600, 43200, 86400, 604800, 2592000],
-            density: 4,
+            values: [60, 1800, 3600,86400, 604800, 2592000, 7776000, 15552000],
+            density: 3,
             format: {
                 to: secsToText,
                 from: function() {}
@@ -65,6 +69,36 @@ $(function () {
         connect: "lower",
         range: {
             'min': [60, 60],
+            "25%":  [3600, 3600],
+            '35%':  [86400, 86400],
+            '45%': [604800, 604800],
+            '60%': [2592000,2592000],
+            '80%': [7776000,7776000],
+            'max': [15552000, 15552000]
+        },
+        pips: {
+            mode: 'values',
+            values: [60, 1800, 3600,86400, 604800, 2592000, 7776000, 15552000],
+            density: 3,
+            format: {
+                to: secsToText,
+                from: function() {}
+            }
+        }
+    });
+
+    graceSlider.noUiSlider.on("update", function(a, b, value) {
+        var rounded = Math.round(value);
+        $("#grace-slider-value").text(secsToText(rounded));
+        $("#update-timeout-grace").val(rounded);
+    });
+
+    var nagSlider = document.getElementById("nag-slider");
+    noUiSlider.create(nagSlider, {
+        start: [20],
+        connect: "lower",
+        range: {
+            'min': [60, 60],
             '33%': [3600, 3600],
             '66%': [86400, 86400],
             '83%': [604800, 604800],
@@ -81,10 +115,10 @@ $(function () {
         }
     });
 
-    graceSlider.noUiSlider.on("update", function(a, b, value) {
+    nagSlider.noUiSlider.on("update", function(a, b, value) {
         var rounded = Math.round(value);
-        $("#grace-slider-value").text(secsToText(rounded));
-        $("#update-timeout-grace").val(rounded);
+        $("#nag-slider-value").text(secsToText(rounded));
+        $("#update-timeout-nag").val(rounded);
     });
 
 
@@ -108,6 +142,7 @@ $(function () {
         $("#update-timeout-form").attr("action", $this.data("url"));
         periodSlider.noUiSlider.set($this.data("timeout"))
         graceSlider.noUiSlider.set($this.data("grace"))
+        nagSlider.noUiSlider.set($this.data("nag"))
         $('#update-timeout-modal').modal({"show":true, "backdrop":"static"});
 
         return false;

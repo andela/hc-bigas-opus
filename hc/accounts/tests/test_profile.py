@@ -1,8 +1,13 @@
+import json
+import re, cgi
+
 from django.core import mail
+from django.utils import timezone
 
 from hc.test import BaseTestCase
 from hc.accounts.models import Member
 from hc.api.models import Check
+
 
 
 class ProfileTestCase(BaseTestCase):
@@ -18,16 +23,51 @@ class ProfileTestCase(BaseTestCase):
         self.alice.profile.refresh_from_db()
         token = self.alice.profile.token
         ### Assert that the token is set
-
+        assert isinstance(token, str)
         ### Assert that the email was sent and check email content
 
     def test_it_sends_report(self):
+        '''
+        This Tests ensure the reports can be sent via email
+        ''' 
+        self.client.login(username="alice@example.org", password="password")
         check = Check(name="Test Check", user=self.alice)
         check.save()
 
-        self.alice.profile.send_report()
+        form = {"update_reports_allowed":"1" ,"reports_frequency": "now"}
+        r = self.client.post("/accounts/profile/", form)
+        self.assertEquals(200,  r.status_code)
+        ###Assert that the email was sent and check email content --Done
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Recent Report")
 
-        ###Assert that the email was sent and check email content
+    def test_you_can_set_report_period(self):
+        '''
+        This test checks that the user is able to set the periods they want to 
+        be recieving reports
+        '''
+        self.client.login(username="alice@example.org", password="password")
+        check = Check(name="Test Check", user=self.alice)
+        check.save()
+
+        form = {"update_reports_allowed": "1", "reports_frequency": "weekly"}
+        res = self.client.post("/accounts/profile/", form)
+        self.assertEquals(200, res.status_code)
+        self.assertEquals("monthly", self.alice.profile.reports_frequency)
+
+    def test_you_can_view_report(self):
+        '''Check if you can view report on the dashboard'''
+        self.client.login(username="alice@example.org", password="password")
+        check = Check(name="Test Check", user=self.alice)
+        check.save()     
+
+        check.last_ping = timezone.now()
+        check.status = "up"
+        check.save()
+        
+        res = self.client.get('/accounts/dashboard/')
+        self.assertTrue(200, res.status_code)
+        self.assertIn("Test Check", str(res.content))
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")

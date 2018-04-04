@@ -15,6 +15,8 @@ urlpatterns = [
 
     url(r'^profile/$', views.profile, name="hc-profile"),
 
+    url(r'^dashboard/$', views.dashboard, name="hc-dashboard"),
+
     url(r'^unsubscribe_reports/([\w-]+)/$',
         views.unsubscribe_reports, name="hc-unsubscribe-reports"),
 

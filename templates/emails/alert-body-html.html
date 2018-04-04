@@ -5,8 +5,14 @@
 <p>
     This is a notification sent by <a href="https://healthchecks.io">healthchecks.io</a>.
     <br />
-    The check <strong>{{ check.name_then_code }}</strong>
-    has gone <strong>{{ check.status|upper }}</strong>.
+    {% if check.status == 'nag' %}
+        The check <strong>{{ check.name_then_code }}</strong>is still <strong>DOWN</strong>.
+        <br />
+        Please solve it to stop recieving this notifications.
+    {% else %}
+        The check <strong>{{ check.name_then_code }}</strong>
+        has gone <strong>{{ check.status|upper }}</strong>.
+    {% endif %}
 </p>
 
 <p>Here is a summary of all your checks:</p>

@@ -22,16 +22,35 @@
     <div class="col-sm-6">
         <div class="panel panel-default">
             <div class="panel-body settings-block">
+                <a href="{% url 'hc-dashboard' %}" class="btn btn-default pull-right" >Dash Board</a>.
                 <form method="post">
                     {% csrf_token %}
-                    <h2>Monthly Reports</h2>
-                    <label>
-                        <input
-                            name="reports_allowed"
-                            type="checkbox"
-                            {% if profile.reports_allowed %} checked {% endif %}>
-                        Each month send me a summary of my checks
+                    <h2> Get Reports</h2>
+                    <label for="reports_allowed">Reports allowed:
                     </label>
+                    <input id="reports_allowed" name="reports_allowed" type="checkbox"
+                    {% if profile.reports_allowed == True %} checked {% endif %}/>
+                    </br>
+                    <label for="reports_frequency">Reports frequency:
+                    </label>
+                    <select id="reports_frequency" name="reports_frequency" >
+                        <!-- Request report to be sent immediately -->
+                        <option value="now" {% if profile.reports_frequency == 'now' %} selected {% endif %}> 
+                        Now 
+                        </option>
+                        <!-- Reguest Report to be sent daily -->
+                        <option value="daily" {% if profile.reports_frequency == 'daily' %} selected {% endif %}>
+                            daily
+                        </option>
+                        <!-- Request Report to be sent weekly -->
+                        <option value="weekly" {% if profile.reports_frequency == 'weekly' %} selected {% endif %}>
+                            weekly
+                        </option>
+                        <!-- Request Report to be sent on monthly -->
+                        <option value="monthly" {% if profile.reports_frequency == 'monthly' %} selected {% endif %}>
+                            monthly
+                        </option>
+                    </select>
                     <button
                         name="update_reports_allowed"
                         type="submit"

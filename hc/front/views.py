@@ -164,6 +164,7 @@ def update_timeout(request, code):
     if form.is_valid():
         check.timeout = td(seconds=form.cleaned_data["timeout"])
         check.grace = td(seconds=form.cleaned_data["grace"])
+        check.nag = td(seconds=form.cleaned_data["nag"])
         check.save()
 
     return redirect("hc-checks")
@@ -434,6 +435,16 @@ def add_slack_btn(request):
 def add_hipchat(request):
     ctx = {"page": "channels"}
     return render(request, "integrations/add_hipchat.html", ctx)
+
+@login_required
+def add_sms(request):
+    ctx = {"page": "channels"}
+    return render(request, "integrations/add_sms.html", ctx)
+
+@login_required
+def add_telegram(request):
+    ctx = {"page": "channels"}
+    return render(request, "integrations/add_telegram.html", ctx)
 
 
 @login_required

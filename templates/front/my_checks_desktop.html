@@ -1,4 +1,5 @@
 {% load hc_extras humanize %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <table id="checks-table" class="table hidden-xs">
     <tr>
         <th></th>
@@ -6,7 +7,8 @@
         <th>Ping URL</th>
         <th class="th-period">
             Period <br />
-            <span class="checks-subline">Grace</span>
+            <span class="checks-subline">Grace</span><br />
+            <span class="checks-sub-subline">Nag</span>
         </th>
         <th>Last Ping</th>
         <th></th>
@@ -22,10 +24,14 @@
                     data-toggle="tooltip" title="Monitoring paused. Ping to resume."></span>
             {% elif check.in_grace_period %}
                 <span class="status icon-grace"></span>
+            {% elif check.get_status == "often" %}
+                <span class="fa fa-history" style="font-size:24px;color: #800080"</span>
             {% elif check.get_status == "up" %}
                 <span class="status icon-up"></span>
             {% elif check.get_status == "down" %}
-                <span class="status icon-down"></span>
+               <span class="status icon-down"></span>
+            {% elif check.get_status == "nag" %}
+                <span class="status icon-bullhorn"></span>
             {% endif %}
         </td>
         <td class="name-cell">
@@ -54,11 +60,15 @@
                 data-url="{% url 'hc-update-timeout' check.code %}"
                 data-timeout="{{ check.timeout.total_seconds }}"
                 data-grace="{{ check.grace.total_seconds }}"
+                data-nag="{{ check.nag.total_seconds }}"
                 class="timeout-grace">
                 {{ check.timeout|hc_duration }}
                 <br />
                 <span class="checks-subline">
                 {{ check.grace|hc_duration }}
+                </span><br/>
+                <span class="checks-sub-subline">
+                {{ check.nag|hc_duration }}
                 </span>
             </span>
         </td>

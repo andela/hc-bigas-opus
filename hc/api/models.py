@@ -17,14 +17,17 @@ STATUSES = (
     ("up", "Up"),
     ("down", "Down"),
     ("new", "New"),
-    ("paused", "Paused")
+    ("paused", "Paused"),
+    ("often", "Often"),
+    ("nag", "Nag")
 )
 DEFAULT_TIMEOUT = td(days=1)
 DEFAULT_GRACE = td(hours=1)
+DEFAULT_NAG=td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"))
+                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -47,10 +50,13 @@ class Check(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     timeout = models.DurationField(default=DEFAULT_TIMEOUT)
     grace = models.DurationField(default=DEFAULT_GRACE)
+    nag = models.DurationField(default=DEFAULT_NAG)
     n_pings = models.IntegerField(default=0)
     last_ping = models.DateTimeField(null=True, blank=True)
     alert_after = models.DateTimeField(null=True, blank=True, editable=False)
+    nag_after = models.DateTimeField(null=True,blank=True,editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
+    often = models.BooleanField(default=False)
 
     def name_then_code(self):
         if self.name:
@@ -68,7 +74,7 @@ class Check(models.Model):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
 
     def send_alert(self):
-        if self.status not in ("up", "down"):
+        if self.status not in ("up", "down", "often", "nag"):
             raise NotImplementedError("Unexpected status: %s" % self.status)
 
         errors = []
@@ -80,14 +86,22 @@ class Check(models.Model):
         return errors
 
     def get_status(self):
+        """Check the status of the cron job and return the value"""
         if self.status in ("new", "paused"):
             return self.status
 
         now = timezone.now()
+        if self.often and ((now - self.last_ping) < (self.timeout + self.grace)):
+            return "often"
 
         if self.last_ping + self.timeout + self.grace > now:
             return "up"
-
+        elif self.last_ping + self.timeout + self.grace + self.nag < now:
+            return "nag"
+        else:
+            return "down"
+        # elif self.last_ping + self.timeout + self.grace + self.nag > now:
+        #     return "nag"
         return "down"
 
     def in_grace_period(self):
@@ -97,6 +111,12 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
+    
+    def alert_job_is_too_often(self):
+        """Alert user if cron jobs run too often"""
+        self.status = "often"
+        self.send_alert()
+        self.status = "up"
 
     def assign_all_channels(self):
         if self.user:
@@ -116,6 +136,7 @@ class Check(models.Model):
             "tags": self.tags,
             "timeout": int(self.timeout.total_seconds()),
             "grace": int(self.grace.total_seconds()),
+            "nag":int(self.nag.total_seconds()),
             "n_pings": self.n_pings,
             "status": self.get_status()
         }
@@ -182,13 +203,17 @@ class Channel(models.Model):
             return transports.Pushbullet(self)
         elif self.kind == "po":
             return transports.Pushover(self)
+        elif self.kind == "sms":
+            return transports.SMS(self)
+        elif self.kind == "telegram":
+            return transports.Telegram(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
-    def notify(self, check):
+    def notify(self, check, api=None):
         # Make 3 attempts--
         for x in range(0, 3):
-            error = self.transport.notify(check) or ""
+            error = self.transport.notify(check, api) or ""
             if error in ("", "no-op"):
                 break  # Success!
 

@@ -2,22 +2,40 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils import timezone
 import json
+import os
 import requests
+
+from datetime import datetime
+from twilio.rest import Client
 from six.moves.urllib.parse import quote
 
 from hc.lib import emails
+import telegram
 
+telegram_api = telegram.Bot(token=settings.TELEGRAM_TOKEN)
 
 def tmpl(template_name, **ctx):
     template_path = "integrations/%s" % template_name
     return render_to_string(template_path, ctx).strip()
 
 
+def custom_message(check):
+    message = 'The Check ' + check.name + ' - ' + str(check.code)
+    if check.status == 'down':
+        message = "{} is DOWN \nLast ping {}".format(message,
+        str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S")))
+
+        # message = message + ' is DOWN \nLast ping ' \ 
+        # + str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S"))
+    else:
+        message = message + ' recieved a ping, UP now'
+    return message
+
 class Transport(object):
     def __init__(self, channel):
         self.channel = channel
 
-    def notify(self, check):
+    def notify(self, check, api=None):
         """ Send notification about current status of the check.
 
         This method returns None on success, and error message
@@ -42,7 +60,7 @@ class Transport(object):
 
 
 class Email(Transport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         if not self.channel.email_verified:
             return "Email not verified"
 
@@ -91,7 +109,7 @@ class HttpTransport(Transport):
 
 
 class Webhook(HttpTransport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         url = self.channel.value_down
         if check.status == "up":
             url = self.channel.value_up
@@ -125,14 +143,14 @@ class Webhook(HttpTransport):
 
 
 class Slack(HttpTransport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         text = tmpl("slack_message.json", check=check)
         payload = json.loads(text)
         return self.post(self.channel.slack_webhook_url, payload)
 
 
 class HipChat(HttpTransport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         text = tmpl("hipchat_message.html", check=check)
         payload = {
             "message": text,
@@ -144,7 +162,7 @@ class HipChat(HttpTransport):
 class PagerDuty(HttpTransport):
     URL = "https://events.pagerduty.com/generic/2010-04-15/create_event.json"
 
-    def notify(self, check):
+    def notify(self, check, api=None):
         description = tmpl("pd_description.html", check=check)
         payload = {
             "service_key": self.channel.value,
@@ -159,7 +177,7 @@ class PagerDuty(HttpTransport):
 
 
 class Pushbullet(HttpTransport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         text = tmpl("pushbullet_message.html", check=check)
         url = "https://api.pushbullet.com/v2/pushes"
         headers = {
@@ -178,7 +196,7 @@ class Pushbullet(HttpTransport):
 class Pushover(HttpTransport):
     URL = "https://api.pushover.net/1/messages.json"
 
-    def notify(self, check):
+    def notify(self, check, api=None):
         others = self.checks().filter(status="down").exclude(code=check.code)
         ctx = {
             "check": check,
@@ -205,7 +223,7 @@ class Pushover(HttpTransport):
 
 
 class VictorOps(HttpTransport):
-    def notify(self, check):
+    def notify(self, check, api=None):
         description = tmpl("victorops_description.html", check=check)
         payload = {
             "entity_id": str(check.code),
@@ -216,3 +234,22 @@ class VictorOps(HttpTransport):
         }
 
         return self.post(self.channel.value, payload)
+
+class SMS(HttpTransport):
+    def notify(self, check, api=None):
+        account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+        auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+        client = Client(account_sid, auth_token)
+        message = client.messages.create(
+            to=self.channel.value,
+            from_=os.getenv('TWILIO_NUMBER'),
+            body="Healthcheck update\n the Check {} is\n{}. \nLast ping: {}".format(
+                check.name, check.status, check.last_ping.strftime('%x, %X'))
+        )
+
+class Telegram(HttpTransport):
+    api = telegram.Bot(token=settings.TELEGRAM_TOKEN)
+    def notify(self, check, api=api):
+        if api is None: api = Telegram.api
+        send = api.send_message(
+            chat_id=self.channel.value, text=custom_message(check))
