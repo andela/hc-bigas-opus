@@ -565,3 +565,9 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+def help_center(request):
+    ctx={
+        "page": "help_center"
+    }
+    return render(request, "front/help_center.html", ctx)
