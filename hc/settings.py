@@ -120,7 +120,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# SITE_ROOT = "https://hc-bigas-opus-django-app.herokuapp.com"
 if os.environ.get("SITE_ROOT") == "HEROKU":
     SITE_ROOT = "https://hc-bigas-opus-django-app.herokuapp.com"
 
