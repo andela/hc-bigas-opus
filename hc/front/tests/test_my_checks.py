@@ -2,20 +2,22 @@ from hc.api.models import Check
 from hc.test import BaseTestCase
 from datetime import timedelta as td
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class MyChecksTestCase(BaseTestCase):
 
     def setUp(self):
         super(MyChecksTestCase, self).setUp()
-        self.check = Check(user=self.alice, name="Alice Was Here")
+        bob = User.objects.get(email="bob@example.org")
+        self.check = Check(user=self.alice, name="Alice was Here", membership_access=True, member_id = bob.id)
         self.check.save()
 
     def test_it_works(self):
         for email in ("alice@example.org", "bob@example.org"):
             self.client.login(username=email, password="password")
             r = self.client.get("/checks/")
-            self.assertContains(r, "Alice Was Here", status_code=200)
+            self.assertContains(r, "alice@example.org", status_code=200)
 
     def test_it_shows_green_check(self):
         self.check.last_ping = timezone.now()
