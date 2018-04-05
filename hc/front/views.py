@@ -18,6 +18,8 @@ from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm)
 
+# local imports
+from .models import FaqQuestions
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -567,7 +569,11 @@ def terms(request):
     return render(request, "front/terms.html", {})
 
 def help_center(request):
+    help_questions = FaqQuestions.objects.all()
     ctx={
+        "SITE_ROOT": settings.SITE_ROOT,
+        "PING_ENDPOINT": settings.PING_ENDPOINT,
+        "help_questions": "help_questions",
         "page": "help_center"
     }
     return render(request, "front/help_center.html", ctx)

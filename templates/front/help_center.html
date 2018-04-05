@@ -4,5 +4,12 @@
 {% block docs_content %}
 <h2> Frequently Asked Questions </h2>
 
+{% for faq in help_questions %}
+<p> {{faq.questions}}</p>
+<p>{{faq.answer }}</p>
+<P>{{ faq.link }}</P>
+
+{% endfor%}
+
 
 {% endblock %}
