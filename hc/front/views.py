@@ -31,7 +31,6 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    # q = Check.objects.filter(user=request.team.user).order_by("created")
     q = Check.objects.filter(user=request.team.user).order_by("-priority")
     checks = list(q)
 
@@ -142,19 +141,15 @@ def check_priority(request, code):
     assert request.method == "POST"
 
     check = get_object_or_404(Check, code=code)
-    if check.user_id != request.team.user.id:
-        return HttpResponseForbidden()
-
+    
     form = PriorityForm(request.POST)
     if form.is_valid():
         check.priority = form.cleaned_data["priority_select"]
         usr            = check.user
-        team_name      = usr.profile.team_name
-        team_emails    = form.cleaned_data["team"]
         check.save()
 
     return redirect("hc-checks")
-
+    
 
 @login_required
 @uuid_or_400
