@@ -57,6 +57,7 @@ class Check(models.Model):
     nag_after = models.DateTimeField(null=True,blank=True,editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
     often = models.BooleanField(default=False)
+    priority = models.IntegerField(default=0)
 
     def name_then_code(self):
         if self.name:
@@ -91,6 +92,7 @@ class Check(models.Model):
             return self.status
 
         now = timezone.now()
+
         if self.often and ((now - self.last_ping) < (self.timeout + self.grace)):
             return "often"
 
@@ -149,6 +151,11 @@ class Check(models.Model):
             result["next_ping"] = None
 
         return result
+
+    @property
+    def priority_name(self):
+       prio = self.priority
+       return PO_PRIORITIES[prio]
 
 
 class Ping(models.Model):
