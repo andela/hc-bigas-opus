@@ -148,3 +148,6 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_dashboard_works(self):
+        response = self.client.get("/accounts/dashboard/",)
+        self.assertEqual(response.status_code,302)
