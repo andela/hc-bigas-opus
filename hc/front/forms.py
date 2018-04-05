@@ -24,6 +24,10 @@ class TimeoutForm(forms.Form):
     grace = forms.IntegerField(min_value=60, max_value=2592000)
     nag = forms.IntegerField(min_value=60, max_value=2592000)
 
+class PriorityForm(forms.Form):
+    team = forms.CharField(max_length=500, required=False)
+    priority_select = forms.IntegerField(min_value=-2, max_value=2)
+
 
 class AddChannelForm(forms.ModelForm):
 
