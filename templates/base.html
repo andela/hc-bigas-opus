@@ -124,6 +124,8 @@
                         <li><a href="{% url 'hc-profile' %}">Account Settings</a></li>
                         <li role="separator" class="divider"></li>
 
+                        <li><a href="{% url 'hc-dashboard' %}">Dashboard</a></li>
+                        <li role="separator" class="divider"></li>
                         {% for team in request.teams %}
                         <li class="dropdown-header">{{ team }}</li>
                         <li>
