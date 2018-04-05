@@ -2,14 +2,36 @@
 {% load staticfiles %} 
 {% block title %}FAQ's - healthchecks.io{% endblock %}
 {% block docs_content %}
-<h2> Frequently Asked Questions </h2>
+<h2 class="display-2 text-center"> Frequently Asked Questions </h2>
 
 {% for faq in help_questions %}
-<p> {{faq.questions}}</p>
-<p>{{faq.answer }}</p>
-<P>{{ faq.link }}</P>
+<div class="jumbotron jumbotron-fluid">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6 col-md-6">
+                <h4 class="alert-heading">
+                    <strong>Question</strong>
+                </h4>
+                <p> {{faq.questions}}</p>
+                <h4>
+                    <strong>Answer</strong>
+                </h4>
+                <p class="mb-0">{{faq.answer }}</p>
+            </div>
+            <div class="col-6 col-md-6">
+                <h5>link</h5>
+                    <P class="alert-link">{{ faq.link|default:"No video" }}</P>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <!-- <iframe width="400" height="315" src="https://www.youtube.com/embed/CTFtOOh47oo" frameborder="0" allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                    </iframe> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-{% endfor%}
+{% endfor %}
 
 
 {% endblock %}

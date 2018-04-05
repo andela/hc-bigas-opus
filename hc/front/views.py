@@ -573,7 +573,7 @@ def help_center(request):
     ctx={
         "SITE_ROOT": settings.SITE_ROOT,
         "PING_ENDPOINT": settings.PING_ENDPOINT,
-        "help_questions": "help_questions",
+        "help_questions": help_questions,
         "page": "help_center"
     }
     return render(request, "front/help_center.html", ctx)
