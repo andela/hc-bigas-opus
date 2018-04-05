@@ -5,7 +5,9 @@ from itertools import tee
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -16,7 +18,7 @@ from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+                            TimeoutForm,PriorityForm)
 
 
 # from itertools recipes:
@@ -29,7 +31,8 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
+    # q = Check.objects.filter(user=request.team.user).order_by("created")
+    q = Check.objects.filter(user=request.team.user).order_by("-priority")
     checks = list(q)
 
     counter = Counter()
@@ -129,6 +132,26 @@ def add_check(request):
     check.save()
 
     check.assign_all_channels()
+
+    return redirect("hc-checks")
+
+
+@login_required
+@uuid_or_400
+def check_priority(request, code):
+    assert request.method == "POST"
+
+    check = get_object_or_404(Check, code=code)
+    if check.user_id != request.team.user.id:
+        return HttpResponseForbidden()
+
+    form = PriorityForm(request.POST)
+    if form.is_valid():
+        check.priority = form.cleaned_data["priority_select"]
+        usr            = check.user
+        team_name      = usr.profile.team_name
+        team_emails    = form.cleaned_data["team"]
+        check.save()
 
     return redirect("hc-checks")
 
