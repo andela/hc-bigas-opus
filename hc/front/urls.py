@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'^integrations/', include(channel_urls)),
 
     url(r'^docs/$', views.docs, name="hc-docs"),
+    url(r'^help_center/$', views.help_center, name="hc-help-center"),
     url(r'^docs/api/$', views.docs_api, name="hc-docs-api"),
     url(r'^about/$', views.about, name="hc-about"),
     url(r'^privacy/$', views.privacy, name="hc-privacy"),
