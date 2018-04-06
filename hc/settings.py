@@ -120,11 +120,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-if os.environ.get("SITE_ROOT") == "HEROKU":
-    SITE_ROOT = "https://hc-bigas-opus-django-app.herokuapp.com"
-
-if os.environ.get("SITE_ROOT") == "LOCAL":
-    SITE_ROOT = "http://localhost:8000"
+SITE_ROOT = os.environ['SITE_ROOT']
 
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
