@@ -3,6 +3,8 @@ from hc.test import BaseTestCase
 from datetime import timedelta as td
 from django.utils import timezone
 from django.contrib.auth.models import User
+from hc.front.forms import (PriorityForm)
+
 
 
 class MyChecksTestCase(BaseTestCase):
@@ -83,3 +85,14 @@ class MyChecksTestCase(BaseTestCase):
 
         # Mobile 
         self.assertContains(r,"label-nag")
+    
+    def test_it_sets_priority(self):
+        self.client.login(username="alice@example.org", password="password")
+        self.check.priority  = 2
+        self.check.save()
+        
+        
+        r = self.client.post("/checks/{}/priority/".format(self.check.code),{'priority_select':1})
+
+        self.assertTrue(self.check.priority,1)
+        

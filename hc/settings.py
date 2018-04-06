@@ -121,6 +121,10 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ROOT = os.environ["SITE_ROOT"]
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3a01949cf60c2022784f126b46432e86c079feb4
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
