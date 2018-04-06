@@ -41,8 +41,8 @@ class BlogPosts(models.Model):
     Right before the model is saved we perform this check
     '''
     def pre_save_post_receiver(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(instance)
+        if not instance.slug:
+            instance.slug = unique_slug_generator(instance)
 
 class Comment(models.Model):
     post = models.ForeignKey(BlogPosts, related_name='comments')
@@ -62,5 +62,5 @@ class Comment(models.Model):
 
 
 
-pre_save.connect(pre_save_post_receiver, sender=BlogPosts)
-pre_save.connect(pre_save_post_receiver, sender=BlogPostsCategory)
+# pre_save.connect(pre_save_post_receiver, sender=BlogPosts)
+# pre_save.connect(pre_save_post_receiver, sender=BlogPostsCategory)
