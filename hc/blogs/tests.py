@@ -10,7 +10,7 @@ from django.utils import timezone
 """
 class BlogPostsCategories(BaseTestCase):
     def setUp(self):
-        super(BlogPostsCategories, self).setUp()
+        # super(BlogPostsCategories, self).setUp()
         self.client.login(username="alice@example.org", password="password")
         self.category = BlogPostsCategory(title='YOYO')
         self.category.save()
@@ -26,4 +26,11 @@ class BlogPostsCategories(BaseTestCase):
         response = self.client.post(url, data)
         category = BlogPostsCategory.objects.filter(title='read').first()
         self.assertEqual('read', category.title)
+
+    def test_create_blog_post(self):
+        url = reverse('blog:hc-category')
+        data = {'selectop': ['1'], 'title': ['read'], 'content': ['read'], 'create_blog': ['']}
+        response = self.client.post(url, data)
+        blog = Blog.objects.filter(title='read').first()
+        self.assertEqual('read', blog.title)
 
