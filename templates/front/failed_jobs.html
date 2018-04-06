@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-sm-12">
+        <h1 class="settings-title">Failed Jobs</h1>
+        <em>Showing failed jobs</em>
+    </div>
+    {% if messages %}
+    <div class="col-sm-12">
+        {% for message in messages %}
+            <p class="alert alert-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% if checks %}
+<table id="checks-table" class="table hidden-xs">
+    <tr>
+        <th></th>
+        <th class="th-name">Name</th>
+        <th>Code</th>
+        <th class="th-period">
+            Status <br />
+        </th>
+        <th>Created</th>
+    </tr>
+    {% if checks %}
+        {% for check in checks %}
+            {% if check.get_status == "down" %}
+            <tr class="checks-row">
+                <td class="indicator-cell">
+                    {% if check.get_status == "down" %}
+                        <span class="status icon-down"></span>
+                    {% endif %}
+                </td>
+                <td class="name-cell">
+                    {%if check.name %}
+                    <div>{{ check.name }}</div>
+                    {% else %}
+                    <div><em>Unnamed check</em></div>
+                    {% endif%}
+
+                </td>
+                <td class="code-cell">
+                    <div>{{ check.code }}</div>
+                </td>
+                <td class="status-cell">
+                    <div><span class="label label-danger">{{ check.get_status }}</span></div>
+                </td>
+                <td class="code-cell">
+                    <div>{{ check.created }}</div>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</table>
+
+{% else %}
+<div class="col-sm-12">
+        <p class="alert alert-default">You have no failed jobs yet</p>
+</div>
+{% endif %}
