@@ -10,8 +10,7 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     Unique slug generator function
     In this generator we use a random digit to generate the slug instead of the norm of a query set id
     '''
-    def unique_slug_generator(instance, new_slug=None):
-    
+def unique_slug_generator(instance, new_slug=None):
     if new_slug is not None:
         slug = new_slug
     else:
