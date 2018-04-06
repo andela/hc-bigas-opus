@@ -1,0 +1,34 @@
+{% extends "front/base_docs.html" %} 
+{% load staticfiles %} 
+{% block title %}FAQ's - healthchecks.io{% endblock %}
+{% block docs_content %}
+<h2 class="display-2 text-center"> Frequently Asked Questions </h2>
+
+{% for faq in help_questions %}
+<div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6 col-md-6">
+                <h4 class="alert-heading">
+                    <strong>{{faq.questions}}</strong>
+                </h4>
+                <!-- <h4>
+                    <strong>Answer</strong>
+                </h4> -->
+                <p class="mb-0">{{faq.answer }}</p>
+            </div>
+            <div class="col-6 col-md-6">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <!-- <iframe width="400" height="315" src="https://www.youtube.com/embed/CTFtOOh47oo" frameborder="0" allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                    </iframe> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endfor %}
+
+
+{% endblock %}

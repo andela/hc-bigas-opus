@@ -296,6 +296,65 @@
     </div>
 </div>
 
+<div id="priority-modal" class="modal"><!-- Start class modal-->
+    <div class="modal-dialog"><!-- start modal-dialog -->
+        <form id="update-priority-form" method="post" ><!--start form -->
+            {% csrf_token %}
+            <input type="hidden" name="priority" id="update-priority-options" />
+            <div class="modal-content"><!--start modal-content -->
+                <div class="modal-body"><!-- start modal-body -->
+                    <div class="modal-header" style="margin-bottom:10px">
+                        <div class="update-priority-info text-center"><!-- start Priority text-->
+                            <span class="update-priority-label" data-toggle="tooltip" title="Expected Priorities.">
+                                    <h4 style="float :left">Priority</h4>
+                            </span>
+                        </div><!--end priority text -->
+                    </div><!--End modal Header-->
+                    <div class="form-group"><!--Start Form group div-->
+                        <div id="priority-slider"  style="margin-bottom:10px" ><!-- start slider-->
+                        </div>  <!--End Slider -->
+                    </div><!--End form group div-->
+                        <div class="row" style="margin-top:50px">
+                            <div class="col-sm-12">                  
+                                <div style="float :left"><!--Start select div -->
+                                    <select class="form-control form-control-lg" id ="input-select" name="priority_select"><!--Start select input -->
+                                    </select><!-- End Select input-->
+                                </div><!--End select div-->
+                            </div>
+                        </div> 
+                    {% comment %} <hr />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="add-team-members"
+                                       class="col-sm-2 control-label">
+                                    Team Members
+                                </label>
+                                <div class="col-sm-10">
+                                    <input id="add-team-members" name="team"
+                                           type="text" class="form-control"
+                                           placeholder="Team Emails" />
+                                    <span class="help-block">
+                                        Enter email addresses of team members
+                                        to be contacted in case failing high
+                                        priority checks are not attended to in
+                                        24 hours. The emails should be space
+                                        separated.
+                                    </span>
+                                </div><!--Start col-9 div-->
+                            </div><!--End col div-->
+                        </div><!--End row--> {% endcomment %}
+                </div><!-- End Modal body -->
+                <div class="modal-footer" style="margin-top:10px"><!-- Start Modal footer-->
+                    <div><!-- Start button div-->
+                        <button type="button" class="btn btn-default destroySlider" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary destroySlider">Save</button>
+                    </div><!-- End button div-->
+                </div><!--End modal-body -->
+            </div><!-- End modal-content-->
+        </form><!--End form -->
+</div><!--End modal-dialog-->
+</div><!--End Class-modal  -->
+
 <form id="pause-form" method="post">
     {% csrf_token %}
 </form>

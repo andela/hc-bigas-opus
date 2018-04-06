@@ -322,8 +322,8 @@ def switch_team(request, target_username):
 @login_required
 def dashboard(request):
     profile = request.user.profile
-    q = Check.objects.filter(user=request.team.user)
-    q = q.filter(last_ping__isnull=False)
+    new = Check.objects.filter(user=request.user)
+    q = new.filter(last_ping__isnull=False)
 
     checks = list(q)
     counter = Counter()
@@ -353,4 +353,4 @@ def dashboard(request):
     }
 
     
-    return render(request, 'accounts/dashboard.html', ctx)
+    return render(request, 'accounts/dashboard.html', ctx, new)
