@@ -12,9 +12,9 @@ class BlogPostsCategories(BaseTestCase):
     def setUp(self):
         super(BlogPostsCategories, self).setUp()
         self.client.login(username="alice@example.org", password="password")
-        self.category = BlogPostsCategory(title='Machine Learning')
+        self.category = BlogPostsCategory(title='YOYO')
         self.category.save()
-        self.blog = BlogPosts(title='Basics', content='It is the very beginning', 
+        self.blog = BlogPosts(title='Learning', content='You are accountable to yourself', 
                         category=self.category)
         self.blog.save()
 
