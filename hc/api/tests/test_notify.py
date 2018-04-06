@@ -223,15 +223,15 @@ class NotifyTestCase(BaseTestCase):
         json = kwargs["json"]
         self.assertEqual(json["message_type"], "CRITICAL")
 
-    # @patch("hc.api.transports.requests.request")
-    # def test_sms(self, mock_post):
-    #     self._setup_data("sms", "+254722732155")
-    #     mock_post.return_value.status_code = 200
-    #     date = datetime.now() - timedelta(days=1)
-    #     self.check.last_ping = datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S.%f")
-    #     sms_mocker = Mock()
-    #     self.channel.notify(self.check, sms_mocker)
-    #     assert Notification.objects.count() == 1
+    @patch("hc.api.transports.requests.request")
+    def test_sms(self, mock_post):
+        self._setup_data("sms", "+254722732155")
+        mock_post.return_value.status_code = 200
+        date = datetime.now() - timedelta(days=1)
+        self.check.last_ping = datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S.%f")
+        sms_mocker = Mock()
+        self.channel.notify(self.check, sms_mocker)
+        assert Notification.objects.count() == 1
 
     @patch("hc.api.transports.requests.request")
     def test_telegram(self, mock_post):
