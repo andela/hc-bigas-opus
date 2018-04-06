@@ -47,6 +47,8 @@ class Check(models.Model):
     tags = models.CharField(max_length=500, blank=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    membership_access = models.BooleanField(default=False)
+    member_id = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     timeout = models.DurationField(default=DEFAULT_TIMEOUT)
     grace = models.DurationField(default=DEFAULT_GRACE)
