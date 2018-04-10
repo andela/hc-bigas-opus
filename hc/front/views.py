@@ -153,12 +153,26 @@ def check_priority(request, code):
     assert request.method == "POST"
 
     check = get_object_or_404(Check, code=code)
-    
+    if check.user_id != request.team.user.id:
+        return HttpResponseForbidden()
+
     form = PriorityForm(request.POST)
     if form.is_valid():
         check.priority = form.cleaned_data["priority_select"]
-        usr            = check.user
+        usr = check.user
+        team_name = usr.profile.team_name
+        team_emails = form.cleaned_data["team"]
         check.save()
+        if (check.priority == 1) or (check.priority == 2):
+            for email in team_emails.split(' '):
+                try:
+                    teammate = User.objects.get(email=email)
+                    if teammate:
+                        if check.user.email == email:  # Avoid cyclic invites
+                            continue
+                        usr.profile.invite(teammate)
+                except ObjectDoesNotExist:  # Non-registered email entered
+                    return redirect("hc-checks")
 
     return redirect("hc-checks")
     
