@@ -28,6 +28,16 @@ class PriorityForm(forms.Form):
     team = forms.CharField(max_length=500, required=False)
     priority_select = forms.IntegerField(min_value=-2, max_value=2)
 
+    def clean_team(self):
+        team_emails = []
+
+        for email in self.cleaned_data["team"].split(" "):
+            email = email.strip()
+            if email is not "":
+                team_emails.append(email)
+        return " ".join(team_emails)
+
+
 
 class AddChannelForm(forms.ModelForm):
 
