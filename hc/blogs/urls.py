@@ -1,3 +1,6 @@
+'''
+This file contains the urls belonging to the blog app which will be included in the main urls through the include function
+'''
 from django.conf.urls import url
 from . import views
 

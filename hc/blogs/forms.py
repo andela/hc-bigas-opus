@@ -1,10 +1,14 @@
 from django import forms
-from .models import BlogPostsCategory, BlogPosts, Comments
+from .models import BlogPostsCategory, BlogPosts, Comment
+
+'''
+This file contains the Blog app forms  and their options.
+'''
 
 class BlogPostsCategoryForm(forms.ModelForm):
     class Meta:
         model = BlogPostsCategory
-        fields = ('title')
+        fields = ('title',)
 
 class BlogPostsForm(forms.ModelForm):
     class Meta:
@@ -13,5 +17,5 @@ class BlogPostsForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Comments
-        fields = ('body')
+        model = Comment
+        fields = ('body',)

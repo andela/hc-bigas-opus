@@ -1,8 +1,6 @@
-"""
-Set configuration settings for the blog app
-"""
-
 from django.apps import AppConfig
-
-class BlogConfig(AppConfig):
-    name = 'blog'
+'''
+This file contains the configuration settings of the blog app and the namespace of the app is set here.
+'''
+class BlogsConfig(AppConfig):
+    name = 'blogs'
