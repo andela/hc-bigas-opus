@@ -47,10 +47,10 @@ class Command(BaseCommand):
         # it won't process this check again.
         check.status = check.get_status()
         if check.status == "down":
-            check.nag_after = time.now() + check.nag
+            check.nag_after = timezone.now() + check.nag
             check.status = "nag"
         elif check.status == "nag":
-            check.nag_after = time.now() + check.nag 
+            check.nag_after = timezone.now() + check.nag 
             check.nag_after
         check.save()
 
