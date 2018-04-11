@@ -1,6 +1,9 @@
+from django.db import models
+
+# Create your models here.
 """
 Database models and schemas are contained in this file.
-We will import and use slugify to create cool looking urls
+We will import and use slugify to create cool looking human friendly urls
 """
 
 from django.conf import settings
@@ -11,15 +14,19 @@ from django.db.models.signals import pre_save
 from datetime import datetime
 
 
-# BlogPostCategory model
+# This is the Blog Post Category model
 class BlogPostsCategory(models.Model):
-    title = models.CharField(max_length=300, unique = True)
+    title = models.CharField(max_length=300)
     slug = models.SlugField(unique = True)
+
+    def save (self,*args,**kwargs):
+        self.slug = slugify(self.title)
+        super(BlogPostsCategory, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
-# BlogPosts model
+# This is the Blog Posts model
 class BlogPosts(models.Model):
     author = models.ForeignKey(User, blank=True, null=True)
     title = models.CharField(max_length=300, blank = False)
@@ -32,18 +39,17 @@ class BlogPosts(models.Model):
 
     class Meta:
         ordering = ['created_on']
+        verbose_name = "Blog Post"
+        verbose_name_plural = "Blog posts"
+
+    def save (self,*args,**kwargs):
+        self.slug = slugify(self.title)
+        super(BlogPosts, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
-    from .utils import unique_slug_generator
-    '''
-    Right before the model is saved we perform this check
-    '''
-    def pre_save_post_receiver(sender, instance, *args, **kwargs):
-        if not instance.slug:
-            instance.slug = unique_slug_generator(instance)
-
+# This is the Comment model
 class Comment(models.Model):
     post = models.ForeignKey(BlogPosts, related_name='comments')
     name = models.ForeignKey(settings.AUTH_USER_MODEL, default = 1)
@@ -57,10 +63,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.name, self.post)
-
-
-
-
-
-# pre_save.connect(pre_save_post_receiver, sender=BlogPosts)
-# pre_save.connect(pre_save_post_receiver, sender=BlogPostsCategory)
