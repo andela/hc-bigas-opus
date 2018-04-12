@@ -12,4 +12,4 @@ urlpatterns = [
      url(r'^views/(?P<category>[\w\-]+)/$', views.blog_by_category, name='hc-category-blogs'),
      url(r'^edit/(?P<pk>[\w\-]+)/$', views.edit_blog, name='hc-edit-blog'),
      url(r'^delete/(?P<pk>[\w\-]+)/$', views.delete_blog, name='hc-delete-blog')
-
+]     
