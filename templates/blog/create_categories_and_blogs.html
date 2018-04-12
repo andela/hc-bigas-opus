@@ -17,11 +17,13 @@
                         {% csrf_token %}
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1">category</span>
-                            <select name="selectop" type="text" class="form-control"  aria-describedby="basic-addon1">
-                                {% for categories in form_blog.category %}
-                                    <option name="category" value={{categories}}>{{ categories }}</option>
-                                {% endfor %}
-                            </select>
+                           
+                            <select name="selectop" name='category' class="form-control"  aria-describedby="basic-addon1">
+                                {% for category in categories %}
+                                <option value={{category.title}}>{{category.title}}</option>
+                                {% endfor %} 
+                            </select>        
+                            
                         </div>
                                 
                                 <div id="mybutton3">
