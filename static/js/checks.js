@@ -44,7 +44,7 @@ $(function () {
             '80%': [7776000,7776000],
             'max': [15552000, 15552000]
         },
-        
+
         pips: {
             mode: 'values',
             values: [60, 1800, 3600,86400, 604800, 2592000, 7776000, 15552000],
@@ -232,6 +232,5 @@ $(function () {
         var text = e.trigger.getAttribute("data-clipboard-text");
         prompt("Press Ctrl+C to select:", text)
     });
-
 
 });

@@ -253,6 +253,3 @@ class Telegram(HttpTransport):
         if api is None: api = Telegram.api
         send = api.send_message(
             chat_id=self.channel.value, text=custom_message(check))
-
-class Shopify(HttpTransport):
-    pass

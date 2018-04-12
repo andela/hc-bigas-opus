@@ -66,6 +66,15 @@ class MyChecksTestCase(BaseTestCase):
         self.client.get("/ping/%s/" % self.check.code)
         self.check.refresh_from_db()
 
+        self.client.login(username="alice@example.org", password="password")
+        r = self.client.get("/checks/")
+
+        # Desktop
+        self.assertContains(r, "fa-history")
+
+        # Mobile
+        self.assertContains(r, "label-info")
+
     def test_it_shows_nag_check(self):
         self.client.login(username="alice@example.org", password="password")
 
@@ -79,5 +88,5 @@ class MyChecksTestCase(BaseTestCase):
         # Desktop
         self.assertContains(r, "icon-bullhorn")
 
-        # Mobile 
+        # Mobile
         self.assertContains(r,"label-nag")
