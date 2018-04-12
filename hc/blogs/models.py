@@ -14,6 +14,7 @@ from django.db.models.signals import pre_save
 from datetime import datetime
 
 
+
 # This is the Blog Post Category model
 class BlogPostsCategory(models.Model):
     title = models.CharField(max_length=300)
@@ -27,6 +28,7 @@ class BlogPostsCategory(models.Model):
         return self.title
 
 # This is the Blog Posts model
+
 class BlogPosts(models.Model):
     author = models.ForeignKey(User, blank=True, null=True)
     title = models.CharField(max_length=300, blank = False)

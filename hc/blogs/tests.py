@@ -1,6 +1,8 @@
+
 from django.test import TestCase
 
 # Create your tests here.
+
 from hc.test import BaseTestCase
 from django.contrib.auth.models import User
 from .models import BlogPosts, BlogPostsCategory, Comment
@@ -19,6 +21,8 @@ class BlogPostsCategories(BaseTestCase):
         self.blog = BlogPosts(title='Basics', content='It is the very beginning', 
                         category=self.category)
         self.blog.save()
+
+
     def test_create_category(self):
         url = reverse('blogs:hc-category')
         data = {'create_category-title': ['read'], 'create_category': ['']}
