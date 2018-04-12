@@ -1,6 +1,7 @@
 from django import forms
 from hc.api.models import Channel, ExternalChecks
 
+
 class NameTagsForm(forms.Form):
     name = forms.CharField(max_length=100, required=False)
     tags = forms.CharField(max_length=500, required=False)
@@ -60,10 +61,10 @@ class ExternalChecksForm(forms.ModelForm):
         'class':'form-control',
         }
     ))
-    ping_time_difference = forms.DateTimeField(widget=forms.TextInput(
+    ping_time_difference = forms.DurationField(widget=forms.TextInput(
         attrs = {
-        'class':'form-control',
-        }
+        'class':'form-control'
+        },
     ))
 
     class Meta:

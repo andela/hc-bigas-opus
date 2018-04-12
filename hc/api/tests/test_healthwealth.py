@@ -10,16 +10,16 @@ class HealthWealthTestCase(BaseTestCase):
 
     def test_it_takesuser_input(self):
         self.client.login(username="alice@example.org", password="password")
-        data = {'third_party_url':'','check_url':'','name':'','ping_time_difference':''}
-        r = self.client.post("/add_healthwealth/", data, content_type="application/json")
-        pass
+        form = {'third_party_url':'','check_url':'','name':''}
+        r = self.client.post("/add_healthwealth/", form)
+        self.assertEqual(r.status_code, 200)
 
     def test_user_can_create_integration(self):
         url = "/add_healthwealth/"
-        form = {'third_party_url':'','check_url':'','name':'','ping_time_difference':''}
+        form = {'third_party_url':'','check_url':'','name':''}
         self.client.login(username="alice@example.org", password="password")
         r = self.client.post(url, form)
-        assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
 
     def test_user_can_delete_integration(self):
         self.client.login(username="alice@example.org", password="password")
