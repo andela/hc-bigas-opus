@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import (get_object_or_404, redirect, render,
                               render_to_response)
@@ -34,8 +35,10 @@ def create_categories_and_blogs(request):
             if form.is_valid():
                 category = form.save(commit=False)
                 category.title = form.cleaned_data['title']
-                category.save()
-                return render(request, 'blog/create_categories_and_blogs.html', cxt)
+                try:
+                    category.save()
+                except IntegrityError:
+                    messages.warning(request, 'The category already exists.Create a blog post under that category!')
             return HttpResponseRedirect('/blogs/', cxt)
         elif "create_blog" in request.POST:
             form_blog = BlogPostsForm(request.POST, prefix='create_blog')
@@ -44,12 +47,12 @@ def create_categories_and_blogs(request):
             content = request.POST['content']
             author = request.user
             if title and category_input and content:
-                category_query = get_object_or_404(BlogPostsCategory, id=category_input)
+                category_query = get_object_or_404(BlogPostsCategory, title=category_input)
                 blog=BlogPosts(author=author, title=title, content=content, category=category_query)
                 blog.save()  
                 return HttpResponseRedirect('/blogs/', cxt)
-            return render(request, 'blog/create_categories_and_blogs.html', cxt)
-        return HttpResponseRedirect('/blogs/', cxt)
+        return render(request, 'blog/create_categories_and_blogs.html', cxt)
+        # return HttpResponseRedirect('/blogs/', cxt)
     else:
         return render(request, "blog/view_blogs.html", cxt)
 
@@ -57,8 +60,16 @@ def create_categories_and_blogs(request):
 def create_blogs(request):
     """A function to render the template for creating blog posts"""
     form = BlogPostsCategoryForm(request.POST or None, prefix="create_category")
-    form_blog = BlogPostsForm(request.POST, prefix='create_blog')
-    return render(request, 'blog/create_categories_and_blogs.html', {'form':form, 'form_blog':form_blog})
+    form_blog = BlogPostsForm(request.POST or None, prefix="create_blog")
+    categories = BlogPostsCategory.objects.all()
+    blogs = BlogPosts.objects.all()
+    cxt = {
+        'form':form,
+        'categories':categories,
+        'form_blog':form_blog,
+        'blogs':blogs
+    }
+    return render(request, 'blog/create_categories_and_blogs.html', cxt)
 
 def blog_by_category(request, category):
     """This function displays blogs under a specific category"""
