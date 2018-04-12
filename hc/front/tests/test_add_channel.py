@@ -36,9 +36,8 @@ class AddChannelTestCase(BaseTestCase):
         for frag in kinds:
             url = "/integrations/add_%s/" % frag
             r = self.client.get(url)
-            print(r)
             self.assertContains(r, "Settings", status_code=200)
-            
+
     def test_bad_kinds_dont_work(self):
         """Test that bad kinds don't work"""
         url = "/integrations/add/"
