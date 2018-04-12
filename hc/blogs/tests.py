@@ -22,6 +22,12 @@ class BlogPostsCategories(BaseTestCase):
                         category=self.category)
         self.blog.save()
 
+    
+    def test_create_blog(self):
+        url = reverse('blogs:hc-category')
+        blog = BlogPosts.objects.filter(title='Basics').first()
+        self.assertEqual('Basics', blog.title)
+
 
     def test_create_category(self):
         url = reverse('blogs:hc-category')
@@ -35,6 +41,12 @@ class BlogPostsCategories(BaseTestCase):
         url = reverse('blogs:hc-category')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/view_blogs.html')
+
+    def test_view_blogs__by_category(self):
+        category = BlogPostsCategory.objects.get(title='Machine Learning')
+        url = 'http://localhost:8000/blog/views/1/'
+        response = self.client.get(url)
         self.assertTemplateUsed(response, 'blog/view_blogs.html')
 
 
@@ -58,7 +70,7 @@ class BlogPostsCategories(BaseTestCase):
         self.assertRedirects(response, '/blogs/')
         self.assertEqual(response.status_code, 302)
 
-
+   
     def test_if_get_redirect(self):
         url = reverse('blogs:hc-category')
         response = self.client.get(url)
