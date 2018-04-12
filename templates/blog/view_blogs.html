@@ -1,0 +1,72 @@
+{% extends "front/base_docs.html" %}
+{% load staticfiles %}
+
+{% block title %}
+    Blog Categories
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}" type="text/css">
+<div class="row" id="blogcategories">
+        <h2>
+                Blog Posts
+        </h2>
+</div>
+<div  class='row'>
+<div class='col-md-3'>
+    {% if request.user.is_authenticated %}
+    <div class="row"> 
+        <a id="addcategory"style="margin-top:-20px" href="{% url 'blogs:hc-categories' %}"><button type="button" class="btn btn-primary ">Add Blog Post</button></a> 
+    </div>
+    {% endif %}
+    <div class="row aside">
+        <h3> Blog Categories</h3>
+        <ul class="list-group lists ">
+            {% for category in categories %}
+                    <li class="list-group-item ">
+                    <a style="font-size:20px;" href="{% url 'blogs:hc-category-blogs' category=category.id %}"> {{ category.title|title }}</a>
+                    </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+    <div class='col-md-9 line'>
+        {% if blogs %}
+        <div class="row" id="blogcategory">
+            <h3>
+                All {{ category|title }} Blogs
+            </h3>
+        </div>
+        {% endif %}
+        <div class="row">
+        <div class="row blog-container">
+            {% if blogs %}
+                {% for blog in blogs %}
+                <div id="panelpost" class="col-md-4 panel panel-default">
+                        <div id="heading" class="panel-heading">
+                            <h3 class="panel-title">{{ blog.title|title }}</h3>
+                        </div>
+                        <div class="panel-body panel-body2">
+                            {{ blog.content| truncatechars:90 }}
+                        </div>
+                        <div id="footer"class="panel-footer" style="font-size:20px">
+                            <a style="font-size:20px;"href="{% url 'blogs:hc-view-blog' blog.id %}">
+                                Read More
+                            </a>
+                        </div>
+                </div>
+
+                {% endfor %}
+            {% else%}
+            <div id="panelpost1" class="col-md-4 panel panel-default">
+                <div class="panel-body panel-body2">
+                        No Blog Stories In Here.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
