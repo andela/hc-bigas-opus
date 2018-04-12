@@ -302,6 +302,7 @@ class Notification(models.Model):
 
 class ExternalChecks(models.Model):
     name = models.CharField(max_length=200)
-    third_party_url = models.CharField(max_length=200)
+    third_party_url = models.CharField(max_length=500)
     check_url = models.CharField(max_length=200)
-    ping_time_difference = models.DateTimeField(null=True, blank=True)
+    base_time = models.DateTimeField(auto_now_add=True)
+    ping_time_difference = models.DurationField(null=True, blank=True)

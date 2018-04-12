@@ -10,6 +10,7 @@ class HealthWealthTestCase(BaseTestCase):
         self.external_check = ExternalChecks()
         self.external_check.save()
 
+<<<<<<< HEAD
     def test_user_can_create_integration(self):
         url = "/integrations/add_healthwealth/"
         self.client.login(username="alice@example.org", password="password")
@@ -20,6 +21,19 @@ class HealthWealthTestCase(BaseTestCase):
         test_form = {"third_party_url":"https://www.google.com/","check_url":test_check,"name":"Google"}
         r = self.client.post(url, test_form)
         print(r)
+=======
+    def test_it_takesuser_input(self):
+        self.client.login(username="alice@example.org", password="password")
+        form = {'third_party_url':'','check_url':'','name':''}
+        r = self.client.post("/add_healthwealth/", form)
+        self.assertEqual(r.status_code, 200)
+
+    def test_user_can_create_integration(self):
+        url = "/add_healthwealth/"
+        form = {'third_party_url':'','check_url':'','name':''}
+        self.client.login(username="alice@example.org", password="password")
+        r = self.client.post(url, form)
+>>>>>>> [feature] Allow user to input interval times between third party pings
         self.assertEqual(r.status_code, 200)
 
     def test_user_can_delete_integration(self):

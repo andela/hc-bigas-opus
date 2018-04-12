@@ -227,13 +227,14 @@ def remove_check(request, code):
 
     return redirect("hc-checks")
 
+@login_required
 def remove_integration(request, id):
     print(id)
     assert request.method == "POST"
 
-    integration = get_object_or_404(Integration, id=id)
-
-    integration.delete()
+    integration = Integration.objects.filter(id=id).first()
+    if integration:
+        integration.delete()
 
     return redirect("hc-docs")
 
@@ -435,8 +436,9 @@ def add_healthwealth(request):
     custom_integrations = []
     if request.method == "POST":
         form = ExternalChecksForm(data=request.POST)
+        # import pdb; pdb.set_trace()
         if form.is_valid():
-             form.save()
+            form.save()
     # elif integration.id:
     #     integrations = ExternalChecks()
     #     for intgration in integrations:
