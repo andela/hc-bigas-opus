@@ -3,14 +3,36 @@ import re, cgi
 
 from django.core import mail
 from django.utils import timezone
-
+from django.shortcuts import get_object_or_404
 from hc.test import BaseTestCase
-from hc.accounts.models import Member
+from hc.accounts.models import Member, Profile, User
+
 from hc.api.models import Check
 
 
 
 class ProfileTestCase(BaseTestCase):
+
+    def _invite_member(self, email):
+
+        """
+        This is helper method invites a new team member
+        """
+        form = {"invite_team_member": "1", "email": email}
+        response = self.client.post("/accounts/profile/", form)
+        self.assertEqual(response.status_code, 200)
+
+    def _get_member(self, email):
+        """
+        This helper method gets a specific member from a team
+        """
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
+        # user = User.objects.get(email=email)
+        # user = get_object_or_404(User, email=email)
+        return Member.objects.filter(team=self.alice.profile, user=user).first()
 
     def test_it_sends_set_password_link(self):
         self.client.login(username="alice@example.org", password="password")
@@ -71,24 +93,24 @@ class ProfileTestCase(BaseTestCase):
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
-        check = Check(name="team we")
-        check.save()
 
-        form = {"invite_team_member": "1", "email": "frank@example.org", "check":"team we"}
-        r = self.client.post("/accounts/profile/", form)
-        assert r.status_code == 200
+        form = {"invite_team_member": "1", "email": "frank@example.org"}
+        invitation = self.client.post("/accounts/profile/", form)
+        assert invitation.status_code == 200
 
         member_emails = set()
         for member in self.alice.profile.member_set.all():
             member_emails.add(member.user.email)
+            print('member_emails',member_emails)
 
         ### Assert the existence of the member emails
+        # assert member email exists with existing team members
+        self.assertTrue("bob@example.org" in member_emails)
         
-        self.assertTrue("frank@example.org" in member_emails)
-
         ###Assert that the email was sent and check email content
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "You have been invited to join alice@example.org on healthchecks.io")
+        user = User.objects.filter(email="bob@example.org").first()
+        self.assertEqual(user.email, "bob@example.org")
+
     def test_add_team_member_checks_team_access_allowed_flag(self):
         """Test if user is denied team access to view the checks by the owner."""
         self.client.login(username="charlie@example.org", password="password")
@@ -96,6 +118,7 @@ class ProfileTestCase(BaseTestCase):
         form = {"invite_team_member": "1", "email": "frank@example.org"}
         r = self.client.post("/accounts/profile/", form)
         assert r.status_code == 403
+
     def test_it_removes_team_member(self):
         self.client.login(username="alice@example.org", password="password")
 
@@ -154,3 +177,66 @@ class ProfileTestCase(BaseTestCase):
     def test_dashboard_works(self):
         response = self.client.get("/accounts/dashboard/",)
         self.assertEqual(response.status_code,302)
+    
+    def test_user_can_revoke_api_key(self):
+        """
+        User should be able to revoke an api
+        :return:  True
+        """
+        self.client.login(username="alice@example.org", password="password")
+        api_key = self.alice.profile.api_key
+        self.assertEqual(api_key, 'abc')  # Assert that api key created
+
+        form = {"revoke_api_key": ""}
+        self.client.post("/accounts/profile/", form)  # revoke the api key
+        self.alice.profile.refresh_from_db()
+        api_key = self.alice.profile.api_key
+        self.assertEqual("", api_key)
+
+    def test_user_can_create_api_key(self):
+        """
+        User should be able to create an api after revoking it
+        :return: True
+        """
+        self.client.login(username="alice@example.org", password="password")
+        api_key = self.alice.profile.api_key
+        self.assertEqual(api_key, 'abc')  # Assert that api key created
+
+        form = {"revoke_api_key": ""}
+        # Try and revoke the api key
+        self.client.post("/accounts/profile/", form)
+        self.alice.profile.refresh_from_db()
+        api_key = self.alice.profile.api_key  # Should return None
+        self.assertEqual("", api_key)
+
+        #// CREATE AN API KEY AFTER REVOKING IT
+
+        form = {"create_api_key": ""}
+        self.client.post("/accounts/profile/", form)
+        self.alice.profile.refresh_from_db()
+
+        api_key = self.alice.profile.api_key  # should return a new api key
+        assert api_key
+
+    def test_adding_team_member_with_lowest_priority(self):
+        """
+        Ensure that a new team member is added leading the priority
+        to reduce in turn
+        """
+        self.client.login(username="alice@example.org", password="password")
+        self._invite_member("glassman@example.org")
+
+        member = self._get_member("glassman@example.org")
+
+    def test_update_priority(self):
+        """
+        Ensure that the team member priority can be updated 
+        """
+        self.client.login(username="alice@example.org", password="password")
+        self._invite_member("glassman@example.com")
+        member = self._get_member("glassman@example.com")
+        form = {"update_priority": "1", "email": "glassman@example.com"}
+        response = self.client.post("/accounts/profile/", form)
+        self.assertEqual(response.status_code, 200)
+
+        member = self._get_member("glassman@example.com")
