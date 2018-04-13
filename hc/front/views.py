@@ -431,7 +431,6 @@ def add_pd(request):
 @login_required
 def add_healthwealth(request):
     """User adds third party integration from form"""
-    custom_integrations = []
     if request.method == "POST":
         form = ExternalChecksForm(data=request.POST)
         if form.is_valid():
