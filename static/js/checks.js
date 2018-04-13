@@ -302,5 +302,4 @@ $(function () {
         priorityslider.noUiSlider.destroy()
     });
 
-
 });
