@@ -8,6 +8,7 @@
     <div class="col-sm-12">
         <h1 id="pitch">Cron Monitoring. Get Notified When Your Cron Jobs Fail.</h1>
     </div>
+    
     </div>
 
     <div class="row">
@@ -138,8 +139,8 @@
     <div class="col-sm-8">
         <img
             class="img-responsive"
-            src="{% static 'img/my_checks.png' %}"
-            srcset="{% static 'img/my_checks.png'%} 1x, {% static 'img/my_checks@2x.png'%} 2x"
+            src="{% static 'img/checks.png' %}"
+            srcset="{% static 'img/checks.png'%} 1x, {% static 'img/checks.png'%} 2x"
             alt="My Checks page" />
     </div>
     <div class="col-sm-4">
@@ -149,8 +150,8 @@
         </p>
         <p>
             Give names to your checks to easily recognize them
-            later. Adjust Period and Grace time to match periodicity
-            and duration of your tasks.
+            later. Adjust Period and Grace, and Nag time to match periodicity
+            and duration of your tasks. 
         </p>
     </div>
     </div>
@@ -159,12 +160,13 @@
     <div class="col-sm-8">
         <img
             class="img-responsive"
-            src="{% static 'img/period_grace.png' %}"
-            srcset="{% static 'img/period_grace.png'%} 1x, {% static 'img/period_grace@2x.png'%} 2x"
+            src="{% static 'img/alerts.png' %}"
+            srcset="{% static 'img/alerts.png'%} 1x, {% static 'img/alerts.png'%} 2x"
             alt="Period/Grace Time dialog" />
     </div>
     <div class="col-sm-4">
-        Each check has configurable <strong>Period</strong> and <strong>Grace Time</strong> parameters.
+        Each check has configurable <strong>Period,</strong> <strong>Grace Time</strong> 
+        and <strong>Nag Time</strong> parameters.
         Depending on these parameters and time since the last ping, the check is in one of the
         following states:
 
@@ -208,10 +210,64 @@
                     sends you a notification.
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <span class="status icon-bullhorn"></span>
+                </td>
+                <td>
+                    Nag.
+                    Time since last ping has exceeded <strong>Period</strong> + <strong>Grace</strong>
+                     + <strong>Nag</strong> time.
+                    When check goes from "Late" to "Down" to "Nag", HealthChecks
+                    starts sending you non-stop (nagging) notifications until 
+                    the issue is fixed.
+                </td>
+            </tr>
         </table>
 
     </div>
     </div>
+
+    <div class="row tour-section">
+        <div class="col-sm-8">
+            <img
+                class="img-responsive"
+                src="{% static 'img/reports.png' %}"
+                srcset="{% static 'img/reports.png'%} 1x, {% static 'img/reports.png'%} 2x"
+                alt="My Checks page" />
+        </div>
+        <div class="col-sm-4">
+            <p>
+                A Dashboard which show reports of all existing cron jobs
+                and their status. The "Failed Jobs" tab contains a list 
+                of all failed jobs.
+            </p>
+            <p>
+                The priorities are also defined so that you are able 
+                to track your cron jobs according to their priorities. 
+            </p>
+        </div>
+        </div>
+
+        <div class="row tour-section">
+            <div class="col-sm-8">
+                <img
+                    class="img-responsive"
+                    src="{% static 'img/up_mail.png' %}"
+                    srcset="{% static 'img/up_mail.png'%} 1x, {% static 'img/up_mail.png'%} 2x"
+                    alt="My Checks page" />
+            </div>
+            <div class="col-sm-4">
+                <p>
+                    A sample email that you receive on a status of your job. These are 
+                    sent when a status changes.
+                </p>
+                <p>
+                    The different kinds of status include <strong>UP,</strong> <strong>DOWN</strong> and
+                    <strong>STILL DOWN</strong>.
+                </p>
+            </div>
+            </div>
 
     <div class="row tour-section">
     <div class="col-sm-8">
