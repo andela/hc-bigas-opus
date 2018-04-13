@@ -65,12 +65,7 @@ class ExternalChecksForm(forms.ModelForm):
         'class':'form-control',
         }
     ))
-    ping_time_difference = forms.DurationField(widget=forms.TextInput(
-        attrs = {
-        'class':'form-control'
-        },
-    ))
 
     class Meta:
         model = ExternalChecks
-        fields = ['third_party_url','check_url','name','ping_time_difference']
+        fields = ['third_party_url','check_url','name']
