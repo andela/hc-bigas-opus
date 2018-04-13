@@ -1,4 +1,4 @@
-from hc.api.models import ExternalChecks
+from hc.api.models import ExternalChecks, Check
 from hc.test import BaseTestCase
 
 
@@ -6,6 +6,7 @@ class HealthWealthFrontTestCase(BaseTestCase):
     def setUp(self):
         """Set up the tests variables"""
         super(HealthWealthFrontTestCase, self).setUp()
+        self.check = Check()
         self.external_check = ExternalChecks()
         self.external_check.save()
 
@@ -24,10 +25,15 @@ class HealthWealthFrontTestCase(BaseTestCase):
     def test_checks_renders_correct_status(self):
         """Test after running third party ping it visually updates check status"""
         self.client.login(username="alice@example.org", password="password")
+        self.client.post("/checks/add/")
+        check = self.check.code
+        form = {"third_party_url":"https://www.google.com/","check_url":"http://localhost:8000/ping/%s" % check,"name":"Google"}
+        post_res = self.client.post("/integrations/add_healthwealth/", form)
+        self.assertEqual(post_res.status_code, 200)
+        check = ExternalChecks.objects.filter(check_url='http://localhost:8000/ping/%s' % check).first()
+        res = self.client.get("/integrations/healthwealth_check/%s/" % check.id)
+        self.assertEqual(res.status_code, 302)
         r = self.client.get("/checks/")
 
         # Desktop
-        self.assertContains(r, "icon-grace")
-
-        # Mobile
-        self.assertContains(r, "label-warning")
+        self.assertContains(r, "icon-up")
