@@ -6,6 +6,9 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from django.utils import timezone
 from hc.api.models import Check
+from hc.accounts.models import Member
+
+from hc.api.models import Channel
 
 executor = ThreadPoolExecutor(max_workers=10)
 logger = logging.getLogger(__name__)
@@ -47,19 +50,27 @@ class Command(BaseCommand):
         # it won't process this check again.
         check.status = check.get_status()
         if check.status == "down":
-            check.nag_after = time.now() + check.nag
-            check.status = "nag"
-        elif check.status == "nag":
-            check.nag_after = time.now() + check.nag 
-            check.nag_after
-        check.save()
+            self.notify_members(check)
+            check.nag_after = timezone.now() + check.nag
+            check.status = True
+            check.save()
+        
+        self.send_alert(check)
+        connection.close()
+        return True
 
+    def send_alert(self, check):
+        """
+        This helper method  notifies a user
+        """
         tmpl = "\nSending alert, status=%s, code=%s\n"
         self.stdout.write(tmpl % (check.status, check.code))
         errors = check.send_alert()
-        for ch, error in errors:
-            self.stdout.write("ERROR: %s %s %s\n" % (ch.kind, ch.value, error))
-
+        if errors is not None:
+            for ch, error in errors:
+                self.stdout.write("ERROR: %s %s %s\n" %
+                                (ch.kind, ch.value, error))
+                                
         connection.close()
         return True
 
@@ -77,3 +88,19 @@ class Command(BaseCommand):
             if ticks % 60 == 0:
                 formatted = timezone.now().isoformat()
                 self.stdout.write("-- MARK %s --" % formatted)
+
+    def notify_members(self, check):
+        """
+        This method notifies members in the team
+        """
+        members = Member.objects.filter(
+            team=check.user.profile).all()
+        for member in members:
+            if member.priority == "LOW" or (member.priority == "HIGH" and not check.is_alerted):
+                channel = Channel.objects.filter(
+                    value=member.user.email).first()
+                check.is_alerted = True
+                check.save()
+                error = channel.notify(check)
+                if error not in ("", "no-op"):
+                    print("%s, %s" % (channel, error))
