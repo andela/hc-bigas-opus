@@ -23,4 +23,5 @@ class HealthWealthTestCase(BaseTestCase):
 
     def test_user_can_delete_integration(self):
         self.client.login(username="alice@example.org", password="password")
+        # self.assertEqual(r.status_code, 302)
         pass

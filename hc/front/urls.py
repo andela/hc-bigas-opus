@@ -26,6 +26,7 @@ channel_urls = [
     url(r'^add_victorops/$', views.add_victorops, name="hc-add-victorops"),
     url(r'^add_healthwealth/$', views.add_healthwealth, name="hc-add-healthwealth"),
     url(r'^add_healthwealth/remove_integration/(?P<id>\w+)/$', views.remove_integration, name="hc-remove-integration"),
+    url(r'^healthwealth_check/(?P<id>\w+)/$', views.run_third_party_check, name="hc-run-third-party-check"),
     url(r'^([\w-]+)/checks/$', views.channel_checks, name="hc-channel-checks"),
     url(r'^([\w-]+)/remove/$', views.remove_channel, name="hc-remove-channel"),
     url(r'^([\w-]+)/verify/([\w-]+)/$', views.verify_email,
