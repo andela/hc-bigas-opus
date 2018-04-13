@@ -71,8 +71,10 @@ class ProfileTestCase(BaseTestCase):
 
     def test_it_adds_team_member(self):
         self.client.login(username="alice@example.org", password="password")
+        check = Check(name="team we")
+        check.save()
 
-        form = {"invite_team_member": "1", "email": "frank@example.org"}
+        form = {"invite_team_member": "1", "email": "frank@example.org", "check":"team we"}
         r = self.client.post("/accounts/profile/", form)
         assert r.status_code == 200
 
@@ -81,18 +83,19 @@ class ProfileTestCase(BaseTestCase):
             member_emails.add(member.user.email)
 
         ### Assert the existence of the member emails
-
+        
         self.assertTrue("frank@example.org" in member_emails)
 
         ###Assert that the email was sent and check email content
-
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "You have been invited to join alice@example.org on healthchecks.io")
     def test_add_team_member_checks_team_access_allowed_flag(self):
+        """Test if user is denied team access to view the checks by the owner."""
         self.client.login(username="charlie@example.org", password="password")
 
         form = {"invite_team_member": "1", "email": "frank@example.org"}
         r = self.client.post("/accounts/profile/", form)
         assert r.status_code == 403
-
     def test_it_removes_team_member(self):
         self.client.login(username="alice@example.org", password="password")
 
@@ -148,3 +151,6 @@ class ProfileTestCase(BaseTestCase):
         self.assertNotContains(r, "bobs-tag.svg")
 
     ### Test it creates and revokes API key
+    def test_dashboard_works(self):
+        response = self.client.get("/accounts/dashboard/",)
+        self.assertEqual(response.status_code,302)

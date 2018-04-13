@@ -1,0 +1,25 @@
+% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Edit blog{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}" type="text/css">
+<div id="myblogpost" class="col-md-12">
+    <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Edit Blog Post</h2>
+            </div>
+            <div class="panel-body">
+                        {% for blog in blog %}
+                        <form id="myinput" method="post" action="{% url 'blogs:hc-edit-blog' blog.id %}">
+                                {% csrf_token %}
+                                {{ form_comment.as_p }}
+                        <button type = "submit" name = "add_comment">Add Comment</button>
+                        </form>
+                        {% endfor %}
+                </form>
+            </div>
+    </div>
+</div>
+{% endblock %}

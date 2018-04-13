@@ -5,7 +5,9 @@ from itertools import tee
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Count
 from django.http import Http404, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -15,11 +17,13 @@ from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
 from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping, ExternalChecks
-from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
-                            TimeoutForm)
+from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm, TimeoutForm,PriorityForm)                         
 from .forms import ExternalChecksForm
 from hc.api.external_checks import external_check
 
+
+# local imports
+from .models import FaqQuestions
 
 # from itertools recipes:
 def pairwise(iterable):
@@ -31,9 +35,18 @@ def pairwise(iterable):
 
 @login_required
 def my_checks(request):
-    q = Check.objects.filter(user=request.team.user).order_by("created")
-    checks = list(q)
+    checks = []
+    current_id = request.user.id
+    if request.team == request.user.profile:
+        owner = Check.objects.filter(user=request.team.user).order_by("created")
+        checks = list(owner)
+    else:
+        member_checks = Check.objects.filter(user=request.team.user, membership_access=True, member_id=current_id).order_by("created")    
+        checks = list(member_checks)
 
+    q = Check.objects.filter(user=request.team.user).order_by("-priority")
+    checks = list(q)
+    
     counter = Counter()
     down_tags, grace_tags = set(), set()
     for check in checks:
@@ -77,9 +90,6 @@ def _welcome_check(request):
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect("hc-checks")
-
     check = _welcome_check(request)
 
     ctx = {
@@ -134,6 +144,22 @@ def add_check(request):
 
     return redirect("hc-checks")
 
+
+@login_required
+@uuid_or_400
+def check_priority(request, code):
+    assert request.method == "POST"
+
+    check = get_object_or_404(Check, code=code)
+    
+    form = PriorityForm(request.POST)
+    if form.is_valid():
+        check.priority = form.cleaned_data["priority_select"]
+        usr            = check.user
+        check.save()
+
+    return redirect("hc-checks")
+    
 
 @login_required
 @uuid_or_400
@@ -596,3 +622,13 @@ def privacy(request):
 
 def terms(request):
     return render(request, "front/terms.html", {})
+
+def help_center(request):
+    help_questions = FaqQuestions.objects.all()
+    ctx={
+        "SITE_ROOT": settings.SITE_ROOT,
+        "PING_ENDPOINT": settings.PING_ENDPOINT,
+        "help_questions": help_questions,
+        "page": "help_center"
+    }
+    return render(request, "front/help_center.html", ctx)

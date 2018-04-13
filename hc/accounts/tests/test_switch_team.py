@@ -1,6 +1,6 @@
 from hc.test import BaseTestCase
 from hc.api.models import Check
-
+from django.contrib.auth.models import User
 
 class SwitchTeamTestCase(BaseTestCase):
 

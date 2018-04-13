@@ -149,6 +149,9 @@ def profile(request):
         request.team = profile
         profile.current_team_id = profile.id
         profile.save()
+    check_db = Check.objects.filter(user=request.user).order_by("created")
+    checks = list(check_db)
+    checks.append(check_db)
 
     show_api_key = False
     if request.method == "POST":
@@ -190,15 +193,18 @@ def profile(request):
                 return HttpResponseForbidden()
 
             form = InviteTeamMemberForm(request.POST)
+        
             if form.is_valid():
-
+               
                 email = form.cleaned_data["email"]
+                check_name = form.cleaned_data["check"]
+                
                 try:
                     user = User.objects.get(email=email)
                 except User.DoesNotExist:
                     user = _make_user(email)
-
-                profile.invite(user)
+                check_object = Check.objects.get(name=check_name)
+                profile.invite(user, check_object)           
                 messages.success(request, "Invitation to %s sent!" % email)
         elif "remove_team_member" in request.POST:
             form = RemoveTeamMemberForm(request.POST)
@@ -237,6 +243,7 @@ def profile(request):
 
     ctx = {
         "page": "profile",
+        "checks":checks,
         "badge_urls": badge_urls,
         "profile": profile,
         "show_api_key": show_api_key
@@ -315,8 +322,8 @@ def switch_team(request, target_username):
 @login_required
 def dashboard(request):
     profile = request.user.profile
-    q = Check.objects.filter(user=request.team.user)
-    q = q.filter(last_ping__isnull=False)
+    new = Check.objects.filter(user=request.user)
+    q = new.filter(last_ping__isnull=False)
 
     checks = list(q)
     counter = Counter()
@@ -346,4 +353,4 @@ def dashboard(request):
     }
 
     
-    return render(request, 'accounts/dashboard.html', ctx)
+    return render(request, 'accounts/dashboard.html', ctx, new)

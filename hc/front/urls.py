@@ -8,6 +8,7 @@ check_urls = [
     url(r'^pause/$', views.pause, name="hc-pause"),
     url(r'^remove/$', views.remove_check, name="hc-remove-check"),
     url(r'^log/$', views.log, name="hc-log"),
+    url(r'^priority/$', views.check_priority, name="hc-check-priority"),
 ]
 
 channel_urls = [
@@ -41,6 +42,7 @@ urlpatterns = [
     url(r'^integrations/', include(channel_urls)),
 
     url(r'^docs/$', views.docs, name="hc-docs"),
+    url(r'^help_center/$', views.help_center, name="hc-help-center"),
     url(r'^docs/api/$', views.docs_api, name="hc-docs-api"),
     url(r'^about/$', views.about, name="hc-about"),
     url(r'^privacy/$', views.privacy, name="hc-privacy"),

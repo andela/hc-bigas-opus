@@ -48,6 +48,8 @@ class Check(models.Model):
     tags = models.CharField(max_length=500, blank=True)
     code = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     user = models.ForeignKey(User, blank=True, null=True)
+    membership_access = models.BooleanField(default=False)
+    member_id = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     timeout = models.DurationField(default=DEFAULT_TIMEOUT)
     grace = models.DurationField(default=DEFAULT_GRACE)
@@ -58,6 +60,7 @@ class Check(models.Model):
     nag_after = models.DateTimeField(null=True,blank=True,editable=False)
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
     often = models.BooleanField(default=False)
+    priority = models.IntegerField(default=0)
 
     def name_then_code(self):
         if self.name:
@@ -92,6 +95,7 @@ class Check(models.Model):
             return self.status
 
         now = timezone.now()
+
         if self.often and ((now - self.last_ping) < (self.timeout + self.grace)):
             return "often"
 
@@ -150,6 +154,11 @@ class Check(models.Model):
             result["next_ping"] = None
 
         return result
+
+    @property
+    def priority_name(self):
+       prio = self.priority
+       return PO_PRIORITIES[prio]
 
 
 class Ping(models.Model):
