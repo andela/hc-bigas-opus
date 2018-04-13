@@ -14,7 +14,7 @@ class HealthWealthTestCase(BaseTestCase):
         url = "/integrations/add_healthwealth/"
         self.client.login(username="alice@example.org", password="password")
         self.client.post("/checks/add/")
-        test_check = "http//:localhost:8000/ping/%s" % self.check.code
+        test_check = "http://SITE_ROOT/ping/%s" % self.check.code
         print(test_check)
 
         test_form = {"third_party_url":"https://www.google.com/","check_url":test_check,"name":"Google"}
@@ -26,7 +26,7 @@ class HealthWealthTestCase(BaseTestCase):
         """Test a user can delete an existing integration"""
         self.client.login(username="alice@example.org", password="password")
         self.client.post("/checks/add/")
-        check = "http://localhost:8000/ping/%s" % self.check.code
+        check = "http://SITE_ROOT/ping/%s" % self.check.code
         form = {"third_party_url":"https://www.google.com/","check_url":check,"name":"Google"}
         p = self.client.post("/integrations/add_healthwealth/", form)
         print(p)
