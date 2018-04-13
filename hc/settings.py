@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'hc.front',
     'hc.payments',
     'hc.blogs'
-    
+
 )
 
 MIDDLEWARE = (

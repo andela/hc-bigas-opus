@@ -16,10 +16,12 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.six.moves.urllib.parse import urlencode
 from hc.api.decorators import uuid_or_400
-from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping
+from hc.api.models import DEFAULT_GRACE, DEFAULT_TIMEOUT, Channel, Check, Ping, ExternalChecks
 from hc.front.forms import (AddChannelForm, AddWebhookForm, NameTagsForm,
                             TimeoutForm,PriorityForm)
-from hc.api.models import Check                            
+from hc.api.models import Check
+from .forms import ExternalChecksForm
+from hc.api.external_checks import external_check
 
 # local imports
 from .models import FaqQuestions
@@ -40,12 +42,12 @@ def my_checks(request):
         owner = Check.objects.filter(user=request.team.user).order_by("created")
         checks = list(owner)
     else:
-        member_checks = Check.objects.filter(user=request.team.user, membership_access=True, member_id=current_id).order_by("created")    
+        member_checks = Check.objects.filter(user=request.team.user, membership_access=True, member_id=current_id).order_by("created")
         checks = list(member_checks)
 
     q = Check.objects.filter(user=request.team.user).order_by("-priority")
     checks = list(q)
-    
+
     counter = Counter()
     down_tags, grace_tags = set(), set()
     for check in checks:
@@ -150,7 +152,7 @@ def check_priority(request, code):
     assert request.method == "POST"
 
     check = get_object_or_404(Check, code=code)
-    
+
     form = PriorityForm(request.POST)
     if form.is_valid():
         check.priority = form.cleaned_data["priority_select"]
@@ -158,7 +160,7 @@ def check_priority(request, code):
         check.save()
 
     return redirect("hc-checks")
-    
+
 
 @login_required
 @uuid_or_400
@@ -224,6 +226,16 @@ def remove_check(request, code):
     check.delete()
 
     return redirect("hc-checks")
+
+def remove_integration(request, id):
+    print(id)
+    assert request.method == "POST"
+
+    integration = get_object_or_404(Integration, id=id)
+
+    integration.delete()
+
+    return redirect("hc-docs")
 
 
 @login_required
@@ -418,6 +430,23 @@ def add_pd(request):
     ctx = {"page": "channels"}
     return render(request, "integrations/add_pd.html", ctx)
 
+@login_required
+def add_healthwealth(request):
+    custom_integrations = []
+    if request.method == "POST":
+        form = ExternalChecksForm(data=request.POST)
+        if form.is_valid():
+             form.save()
+    # elif integration.id:
+    #     integrations = ExternalChecks()
+    #     for intgration in integrations:
+    #         if integration.id == intgration.id:
+    #             intgration.delete()
+    else:
+        form = ExternalChecksForm()
+    external_checks = external_check()
+    ctx = {"form": form, "external_checks": external_checks}
+    return render(request, "integrations/add_healthwealth.html", ctx)
 
 def add_slack(request):
     if not settings.SLACK_CLIENT_ID and not request.user.is_authenticated:

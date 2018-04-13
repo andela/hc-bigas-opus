@@ -44,7 +44,7 @@ $(function () {
         var option   = document.createElement("option");
         option.text  = v;
         option.value = k;
-    
+
         select.appendChild(option);
     }
 
@@ -61,7 +61,7 @@ $(function () {
             '80%': [7776000,7776000],
             'max': [15552000, 15552000]
         },
-        
+
         pips: {
             mode: 'values',
             values: [60, 1800, 3600,86400, 604800, 2592000, 7776000, 15552000],
@@ -261,7 +261,7 @@ $(function () {
         //Creating a Slider to  display the different priorities
     var priorityslider = document.getElementById('priority-slider');
     var startSlider = $("#priority-slider");
-    
+
     noUiSlider.create(priorityslider, {
         start: [startSlider.attr("data-sliderstart")],
         connect: "lower",

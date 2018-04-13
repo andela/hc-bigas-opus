@@ -12,7 +12,6 @@ from hc.api.decorators import check_api_key, uuid_or_400, validate_json
 from hc.api.models import Check, Ping
 from hc.lib.badges import check_signature, get_badge_svg
 
-
 @csrf_exempt
 @uuid_or_400
 @never_cache
@@ -131,11 +130,3 @@ def badge(request, username, signature, tag):
 
     svg = get_badge_svg(tag, status)
     return HttpResponse(svg, content_type="image/svg+xml")
-
-def external_check():
-    user_url = ""
-    user_check = ""
-    resp = requests.get(user_url)
-    if resp.status_code = 200:
-        requests.get(user_check)
-    pass

@@ -299,3 +299,9 @@ class Notification(models.Model):
     channel = models.ForeignKey(Channel)
     created = models.DateTimeField(auto_now_add=True)
     error = models.CharField(max_length=200, blank=True)
+
+class ExternalChecks(models.Model):
+    name = models.CharField(max_length=200)
+    third_party_url = models.CharField(max_length=200)
+    check_url = models.CharField(max_length=200)
+    ping_time_difference = models.DateTimeField(null=True, blank=True)
