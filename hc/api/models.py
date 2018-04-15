@@ -217,8 +217,6 @@ class Channel(models.Model):
             return transports.SMS(self)
         elif self.kind == "telegram":
             return transports.Telegram(self)
-        elif self.kind == "shopify":
-            return transports.Shopify(self)
         else:
             raise NotImplementedError("Unknown channel kind: %s" % self.kind)
 
