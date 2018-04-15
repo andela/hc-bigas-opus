@@ -1,6 +1,7 @@
 from hc.api.models import ExternalChecks, Check
 from hc.front.forms import ExternalChecksForm
 from hc.test import BaseTestCase
+from time import sleep
 
 
 class HealthWealthTestCase(BaseTestCase):
@@ -28,7 +29,17 @@ class HealthWealthTestCase(BaseTestCase):
         self.client.post("/checks/add/")
         check = "http://SITE_ROOT/ping/%s" % self.check.code
         form = {"third_party_url":"https://www.google.com/","check_url":check,"name":"Google"}
-        p = self.client.post("/integrations/add_healthwealth/", form)
-        print(p)
+        self.client.post("/integrations/add_healthwealth/", form)
         r = self.client.post("/integrations/add_healthwealth/remove_integration/1/", form)
         self.assertEqual(r.status_code, 302)
+
+    def test_the_integration_works(self):
+        """Test a users integration can ping checks"""
+        url = "/integrations/add_healthwealth/"
+        self.client.login(username="alice@example.org", password="password")
+        self.client.post("/checks/add/")
+        test_check = "http://SITE_ROOT/ping/%s" % self.check.code
+
+        r = self.client.get("/integrations/healthwealth_check/2/")
+        self.assertEqual(r.status_code, 302)
+        self.assertRedirects(r, "/checks/")
