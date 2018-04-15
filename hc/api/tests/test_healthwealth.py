@@ -30,8 +30,11 @@ class HealthWealthTestCase(BaseTestCase):
         check = "http://SITE_ROOT/ping/%s" % self.check.code
         form = {"third_party_url":"https://www.google.com/","check_url":check,"name":"Google"}
         self.client.post("/integrations/add_healthwealth/", form)
-        r = self.client.post("/integrations/add_healthwealth/remove_integration/1/", form)
+        integration = ExternalChecks.objects.filter(check_url=check).first()
+        initial_count = ExternalChecks.objects.count()
+        r = self.client.post("/integrations/add_healthwealth/remove_integration/%s/" % integration.id, form)
         self.assertEqual(r.status_code, 302)
+        assert ExternalChecks.objects.count() == initial_count - 1
 
     def test_the_integration_works(self):
         """Test a users integration can ping checks"""
