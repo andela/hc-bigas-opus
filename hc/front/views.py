@@ -37,14 +37,11 @@ def my_checks(request):
     checks = []
     current_id = request.user.id
     if request.team == request.user.profile:
-        owner = Check.objects.filter(user=request.team.user).order_by("created")
+        owner = Check.objects.filter(user=request.team.user).order_by("-priority")
         checks = list(owner)
     else:
-        member_checks = Check.objects.filter(user=request.team.user, membership_access=True, member_id=current_id).order_by("created")    
+        member_checks = Check.objects.filter(user=request.team.user, membership_access=True, member_id=current_id).order_by("-priority")    
         checks = list(member_checks)
-
-    q = Check.objects.filter(user=request.team.user).order_by("-priority")
-    checks = list(q)
     
     counter = Counter()
     down_tags, grace_tags = set(), set()
