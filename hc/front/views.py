@@ -86,9 +86,6 @@ def _welcome_check(request):
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect("hc-checks")
-
     check = _welcome_check(request)
 
     ctx = {

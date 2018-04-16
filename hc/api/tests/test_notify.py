@@ -7,6 +7,8 @@ from hc.test import BaseTestCase
 from mock import patch, Mock
 from datetime import datetime, timedelta
 from requests.exceptions import ConnectionError, Timeout
+from hc.api.management.commands.sendalerts import Command
+
 
 
 class NotifyTestCase(BaseTestCase):
@@ -102,6 +104,24 @@ class NotifyTestCase(BaseTestCase):
 
         # And email should have been sent
         self.assertEqual(len(mail.outbox), 1)
+    
+    def test_notify_members(self):
+
+        self.client.login(username="alice@example.org", password="password")
+        url = "/integrations/add/"
+        form = {"kind": "email"}
+        self.client.post(url, form)
+        chaneli=Channel.objects.filter(user=self.alice)
+
+        check = Check()
+        check.status = "down"
+        check.name = "samaki"
+        check.user = self.alice
+        check.save()
+
+        command = Command()
+        command.notify_members("samaki")
+
 
     def test_it_skips_unverified_email(self):
         self._setup_data("email", "alice@example.org", email_verified=False)
