@@ -108,7 +108,6 @@ class Command(BaseCommand):
             if member.priority == "LOW" or (member.priority == "HIGH" and not check.is_alerted):
                 channel = Channel.objects.filter(user=check.user).first()
     
-                print(channel)
                 check.is_alerted = True
                 check.save()
                 error = channel.notify(check)
