@@ -94,16 +94,21 @@ class Command(BaseCommand):
                 formatted = timezone.now().isoformat()
                 self.stdout.write("-- MARK %s --" % formatted)
 
-    def notify_members(self, check):
+    def notify_members(self, check_name):
         """
         This method notifies members in the team
         """
+        check = Check.objects.filter(name=check_name).first()
+
         members = Member.objects.filter(
             team=check.user.profile).all()
+
+       
         for member in members:
             if member.priority == "LOW" or (member.priority == "HIGH" and not check.is_alerted):
-                channel = Channel.objects.filter(
-                    value=member.user.email).first()
+                channel = Channel.objects.filter(user=check.user).first()
+    
+                print(channel)
                 check.is_alerted = True
                 check.save()
                 error = channel.notify(check)
