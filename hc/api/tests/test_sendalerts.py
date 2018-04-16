@@ -50,4 +50,4 @@ class SendAlertsTestCase(BaseTestCase):
             check.status = "up"
             check.save()
         result = Command().handle_many()
-        assert result, "handle_many should return True"
+        self.assertTrue(result)
