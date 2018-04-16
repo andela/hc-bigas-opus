@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load staticfiles %} 
+{% block head_title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}" type="text/css">
+<div class="row">
+    <div class="col-md-8">
+            <div  class="panel panel-default">
+                
+                    <div id="post"class="panel-heading" style="text-align:justify">
+                        <h3 class="panel-title" style="font-size:50px">{{ blog.title|title }}</h3>
+                        <small>created on:{{ blog.created_on}}</small>
+                    </div>
+                    <div id="post1" class="panel-body" style="font-size:20px">
+                        {{ blog.content }}
+                    </div>
+                    <div class="panel-footer" style="font-size:20px">
+                            {% if request.user == blog.author %}
+                        <a id="button1" href="{% url 'blogs:hc-edit-blog' blog.id %}">
+                            <button  type="button" class="btn btn-primary">
+                                edit blog
+                            </button>
+                        </a>
+                        <a id="button1" href="{% url 'blogs:hc-delete-blog' blog.id %}">
+                            <button  type="button" class="btn btn-primary" >
+                                delete blog
+                            </button>
+                        </a>
+                    {% endif %}
+                        <a id="button2" class="twitter-share-button" href="https://twitter.com/intent/tweet?text={{blog.title}}&url={{tweet_url}}&hashtags=HealthChecks">
+                            <button  type="button" class="btn btn-primary" >
+                                Twitter
+                            </button>
+                        </a>
+                        <a id="button2" target="_blank" href="http://www.linkedin.com/shareArticle?url=hc-the-knight.herokuapp.com{{ request.get_full_path|urlencode }}&title={{ blog.title }}&summary={{ blog.content }}&source=hc-bigas-opus.herokuapp.com" class="fa fa-linkedin">
+                            <button  type="button" class="btn btn-primary" >
+                                LinkedIn
+                            </button>
+                        </a>
+                    </div>
+            </div>
+            
+        </div>
+
+    <div class="col-md-3" style="border-left: 1px solid #eee;" >
+        <div style="margin-top: 15px;">
+            <h1>COMMENTS</h1>
+        </div>
+        {% if request.user.is_authenticated %}
+            <h4>Add Comment</h4>
+            <form id="myinput" method="post" action="{% url 'blogs:hc-add-comment' post %}">
+                {% csrf_token %}
+                {{ form_comment.as_p }}
+                <button id="button3" type = "submit" name = "add_comment">Add Comment</button>
+            </form>
+        {% endif %}
+        {% if comments %}
+        {% for comment in comments %}
+        <div class="panel panel-default" style="width:150%">
+            
+            <div class="panel-body">
+                {{ comment.body }}
+            </div>
+        </div>
+        {% endfor %}
+        <!-- add pagination -->
+        <div class="pagination">
+                <span class="step-links">
+                    {% if comments.has_previous %}
+                        <a href="?page={{ comments.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ comments.number }} of {{ comments.paginator.num_pages }}.
+                    </span>
+            
+                    {% if comments.has_next %}
+                        <a href="?page={{ comments.next_page_number }}">next</a>
+                    {% endif %}
+                </span>
+            </div>
+        <!-- end pagination -->
+        {% else %}
+        <p>No comments made yet</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
