@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'hc.front',
     'hc.payments',
     'hc.blogs'
-    
+
 )
 
 MIDDLEWARE = (
@@ -121,8 +121,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_ROOT = os.environ["SITE_ROOT"]
 
+SITE_ROOT = os.environ["SITE_ROOT"]
 PING_ENDPOINT = SITE_ROOT + "/ping/"
 PING_EMAIL_DOMAIN = HOST
 STATIC_URL = '/static/'
@@ -164,11 +164,16 @@ TWILIO_ACCOUNT_SID = None
 TWILIO_AUTH_TOKEN = None
 TWILIO_NUMBER = None
 
+# Shopify integration -- override these in local_settings
+# SHOPIFY_API_KEY = dbb8b3a63538ecb107ac4587a9e34e15
+# SHOPIFY_STOREFRONT_TOKEN = 1d2b211a5dd2a9053941b311f2caa0cb
+# SHOPIFY_API_SECRET_KEY = 64bc9786e998b4f28c758a4e42abe16d
+
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
 else:
     warnings.warn("local_settings.py not found, using defaults")
-    
+
 django_heroku.settings(locals())

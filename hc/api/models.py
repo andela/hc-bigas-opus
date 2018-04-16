@@ -28,7 +28,8 @@ DEFAULT_NAG=td(minutes=1)
 CHANNEL_KINDS = (("email", "Email"), ("webhook", "Webhook"),
                  ("hipchat", "HipChat"),
                  ("slack", "Slack"), ("pd", "PagerDuty"), ("po", "Pushover"),
-                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"))
+                 ("victorops", "VictorOps"),("sms","SMS"), ("telegram", "Telegram"),
+                 ("shopify", "Shopify"))
 
 PO_PRIORITIES = {
     -2: "lowest",
@@ -127,7 +128,7 @@ class Check(models.Model):
         up_ends = self.last_ping + self.timeout
         grace_ends = up_ends + self.grace
         return up_ends < timezone.now() < grace_ends
-    
+
     def alert_job_is_too_often(self):
         """Alert user if cron jobs run too often"""
         self.status = "often"
@@ -308,3 +309,8 @@ class Notification(models.Model):
     channel = models.ForeignKey(Channel)
     created = models.DateTimeField(auto_now_add=True)
     error = models.CharField(max_length=200, blank=True)
+
+class ExternalChecks(models.Model):
+    name = models.CharField(max_length=200)
+    third_party_url = models.CharField(max_length=500)
+    check_url = models.CharField(max_length=200)

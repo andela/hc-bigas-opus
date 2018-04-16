@@ -1,0 +1,64 @@
+{% load hc_extras humanize %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<table id="checks-table" class="table hidden-xs">
+    <tr>
+        <th></th>
+        <th class="th-name">Ping URL</th>
+        <th>Third Party URL</th>
+    </tr>
+    {% for integration in external_checks %}
+    <tr class="checks-row">
+        <td class="name-cell">
+            <div data-name="{{ integration.name }}"
+                    class="my-checks-name {% if not integration.name %}unnamed{% endif %}">
+                <div>{{ integration.name|default:"unnamed" }}</div>
+            </div>
+        </td>
+        <td class="url-cell">
+            <span class="my-checks-url">
+                <span class="base">{{ integration.check_url }}</span>
+            </span>
+        </td>
+        <td class="url-cell">
+            <span class="my-checks-url">
+                <span class="base">{{ integration.third_party_url }}</span>
+            </span>
+        </td>
+        <td>
+          <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <a href="{% url 'hc-run-third-party-check' integration.id %}"
+                  data-name="{{ integration.name }}"
+                  data-url="{% url 'hc-run-third-party-check' integration.id %}">
+                  <button class="btn btn-primary">Run Check</button>
+                </a>
+              </div>
+          </div>
+        </td>
+        <td>
+            <div class="check-menu dropdown">
+                <button class="btn btn-sm btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                <span class="icon-settings" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a>
+                          Open Page
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'hc-remove-integration' integration.id %}" class="integration-menu-remove"
+                            data-name="{{ integration.name }}"
+                            data-url="{% url 'hc-remove-integration' integration.id %}">
+                            Delete Integration
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
