@@ -12,6 +12,7 @@ class HealthWealthTestCase(BaseTestCase):
         self.external_check.save()
 
     def test_user_can_create_integration(self):
+        """Test if the user can successfully add a custom integration"""
         url = "/integrations/add_healthwealth/"
         self.client.login(username="alice@example.org", password="password")
         self.client.post("/checks/add/")
