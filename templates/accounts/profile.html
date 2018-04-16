@@ -85,12 +85,23 @@
                         <tr>
                             <td>{{ profile.user.email }}</td>
                             <td>Owner</td>
+                            <td>Priority</td>
                             <td></td>
                         </tr>
                         {% for member in profile.member_set.all %}
                         <tr>
                             <td>{{ member.user.email }} </td>
                             <td>Member</td>
+                            <td>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="email" value="{{ member.user.email }}">
+                                     <td> 
+                                         <button type="submit" class="btn btn-default" name="member_priority">{{ member.priority }}</button>
+                                    </td>
+                                </form>
+                            </td>
+                            
                             <td>
                                 <a
                                     href="#"
@@ -105,7 +116,7 @@
                         <strong>Invite team members to your account.</strong>
                     </p>
                     <p>
-                        Share access to your checks and configured integrations
+                        Share access to your checks to members and configured integrations
                         without having to share a login.
                     </p>
                     {% if not profile.team_access_allowed %}

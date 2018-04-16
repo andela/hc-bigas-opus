@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from hc.api import transports
 from hc.lib import emails
+from hc.accounts.models import Member
 
 STATUSES = (
     ("up", "Up"),
@@ -60,6 +61,7 @@ class Check(models.Model):
     status = models.CharField(max_length=6, choices=STATUSES, default="new")
     often = models.BooleanField(default=False)
     priority = models.IntegerField(default=0)
+    is_alerted = models.BooleanField(default=False)
 
     def name_then_code(self):
         if self.name:
@@ -75,10 +77,16 @@ class Check(models.Model):
 
     def email(self):
         return "%s@%s" % (self.code, settings.PING_EMAIL_DOMAIN)
-
-    def send_alert(self):
-        if self.status not in ("up", "down", "often", "nag"):
-            raise NotImplementedError("Unexpected status: %s" % self.status)
+    
+    def send_often_status(self):
+        self.status = "often"
+        members = Member.objects.filter(
+            team=self.user.profile).all()
+        for member in members:
+            if member.priority == "LOW":
+                self.send_alert()
+            continue
+        self.status = "up"
 
         errors = []
         for channel in self.channel_set.all():
@@ -87,6 +95,10 @@ class Check(models.Model):
                 errors.append((channel, error))
 
         return errors
+
+    def send_alert(self):
+        if self.status not in ("up", "down", "often", "nag"):
+            raise NotImplementedError("Unexpected status: %s" % self.status)
 
     def get_status(self):
         """Check the status of the cron job and return the value"""
