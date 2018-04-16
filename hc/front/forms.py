@@ -1,5 +1,5 @@
 from django import forms
-from hc.api.models import Channel
+from hc.api.models import Channel, ExternalChecks
 
 
 class NameTagsForm(forms.Form):
@@ -48,3 +48,24 @@ class AddWebhookForm(forms.Form):
 
     def get_value(self):
         return "{value_down}\n{value_up}".format(**self.cleaned_data)
+
+class ExternalChecksForm(forms.ModelForm):
+    third_party_url = forms.CharField(widget=forms.TextInput(
+        attrs = {
+        'class':'form-control',
+        }
+    ))
+    check_url = forms.CharField(widget=forms.TextInput(
+        attrs = {
+        'class':'form-control',
+        }
+    ))
+    name = forms.CharField(widget=forms.TextInput(
+        attrs = {
+        'class':'form-control',
+        }
+    ))
+
+    class Meta:
+        model = ExternalChecks
+        fields = ['third_party_url','check_url','name']

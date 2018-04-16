@@ -25,7 +25,7 @@ def custom_message(check):
         message = "{} is DOWN \nLast ping {}".format(message,
         str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S")))
 
-        # message = message + ' is DOWN \nLast ping ' \ 
+        # message = message + ' is DOWN \nLast ping ' \
         # + str(check.last_ping.strftime("%Y-%m-%d %H:%M:%S"))
     else:
         message = message + ' recieved a ping, UP now'
