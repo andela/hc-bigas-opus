@@ -93,12 +93,15 @@
                             <td>{{ member.user.email }} </td>
                             <td>Member</td>
                             <td>
-                                <form id="update-priority-form" method="post">
-                                      {% csrf_token %} 
-                                    <input type="hidden" name="email" value="{{member.user.email}}" /> 
-                                    <button type="submit" name="update_priority" + class="btn btn-default">{{ member.priority }}</button>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="email" value="{{ member.user.email }}">
+                                     <td> 
+                                         <button type="submit" class="btn btn-default" name="member_priority">{{ member.priority }}</button>
+                                    </td>
                                 </form>
                             </td>
+                            
                             <td>
                                 <a
                                     href="#"
