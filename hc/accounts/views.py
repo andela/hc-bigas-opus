@@ -228,22 +228,19 @@ def profile(request):
                 profile.team_name = form.cleaned_data["team_name"]
                 profile.save()
                 messages.success(request, "Team Name updated!")
-            elif "update_priority" in request.POST:
-                if not profile.team_access_allowed:
-                    return HttpResponseForbidden()
-                form = UpdatePriorityForm(request.POST)
-                if form.is_valid():
-                    email = form.cleaned_data["email"]
-                    user = User.objects.get(email=email)
-                    member = Member.objects.filter(team=profile, user=user).first()
-                    if member.priority == "LOW":
-                        member.priority = "HIGH"
 
-                    else:
-                        member.priority = "LOW"
-                    member.save()
-
-                    messages.success(request, "%s's priority updated!" % email)
+        elif "member_priority" in request.POST:
+            form = UpdatePriorityForm(request.POST)
+            if form.is_valid():
+                user_email = form.cleaned_data["email"]
+                user = User.objects.get(email=user_email)
+                get_user = Member.objects.filter(user=user, team=profile).first()
+                if get_user.priority == "LOW":
+                    get_user.priority = "HIGH"
+                else:
+                    get_user.priority = "LOW"
+                get_user.save()
+                messages.success(request, "Your priority changed.")
 
     tags = set()
     for check in Check.objects.filter(user=request.team.user):
