@@ -40,10 +40,8 @@ class Command(BaseCommand):
 
     def handle_one(self, check):
         """ Send an alert for a single check.
-
         Return True if an appropriate check was selected and processed.
         Return False if no checks need to be processed.
-
         """
 
         # Save the new status. If sendalerts crashes,
@@ -54,18 +52,17 @@ class Command(BaseCommand):
             self.notify_members(check)
             check.nag_after = timezone.now() + check.nag
             check.status = True
-            check.save()
-        
-        self.send_alert(check)
-        connection.close()
-        return True
-
             check.nag_after = timezone.now() + check.nag
             check.status = "nag"
+        
         elif check.status == "nag":
             check.nag_after = timezone.now() + check.nag 
             check.nag_after
+
         check.save()
+        self.send_alert(check)
+        connection.close()
+        return True
 
     def send_alert(self, check):
         """

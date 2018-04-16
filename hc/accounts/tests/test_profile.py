@@ -101,8 +101,6 @@ class ProfileTestCase(BaseTestCase):
         member_emails = set()
         for member in self.alice.profile.member_set.all():
             member_emails.add(member.user.email)
-            print('member_emails',member_emails)
-
         ### Assert the existence of the member emails
         # assert member email exists with existing team members
         self.assertTrue("bob@example.org" in member_emails)
